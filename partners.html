@@ -42,14 +42,17 @@
      <li>حماية بيانات المستفيدين وصون كرامتهم في كل ما يُنشر.</li>
     </ul>
    </div>
-   <form class="form" data-demo>
+   <form class="form" data-demo novalidate>
     <h3><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l4-4 5 3 5-3 4 4"/><path d="M7 8l-4 4 6 6 3-3 3 3 6-6-4-4"/></svg> طلب شراكة</h3>
     <div class="fgrid">
      <div><label for="po">اسم الجهة</label><input id="po" required></div>
      <div><label for="pt">نوع الجهة</label><select id="pt"><option>جهة أهلية / مؤسسة</option><option>شركة / قطاع خاص</option><option>جهة حكومية</option><option>جمعية أهلية</option><option>شركة حج وعمرة</option><option>جامعة / مركز بحثي</option></select></div>
      <div><label for="pn">اسم المسؤول</label><input id="pn" required></div>
      <div><label for="pe">البريد الإلكتروني</label><input id="pe" type="email" required></div>
-     <div class="full"><label for="pm">مجال الشراكة المقترح</label><textarea id="pm"></textarea></div>
+     <div class="full"><label>مجال الشراكة المقترحة * <small style="font-weight:400;color:var(--muted,#708F88)">(يمكن اختيار أكثر من مجال)</small></label>
+      <div class="opts" data-min-one><label><input type="checkbox" name="ptype"> شراكة مالية</label><label><input type="checkbox" name="ptype"> شراكة تعاونية</label><label><input type="checkbox" name="ptype"> شراكة استراتيجية</label></div>
+      <div class="err">اختر مجالًا واحدًا على الأقل.</div></div>
+     <div class="full"><label for="pm">نبذة عن الشراكة المقترحة *</label><textarea id="pm" style="min-height:120px" placeholder="صف فكرة الشراكة وأهدافها، والبرنامج أو النشاط المستهدف، وما تقدمه جهتكم، والمدة المقترحة." required></textarea></div>
     </div>
     <button class="btn btn-gold" type="submit" style="margin-top:16px">إرسال الطلب</button>
     <div class="ok">تم استلام طلبك (نموذج عرض). سيتواصل معك فريق الشراكات.</div>
