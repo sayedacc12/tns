@@ -19,12 +19,20 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // النماذج: نموذج عرض فقط إلى أن يُربط الموقع بنظام الجمعية بعد الترخيص
+  document.addEventListener('change', function (e) {
+    var g = e.target.closest('[data-min-one]'); if (g && g.querySelector('input:checked')) g.parentNode.classList.remove('invalid');
+  });
   document.querySelectorAll('form[data-demo]').forEach(function (f) {
     f.addEventListener('submit', function (e) {
       e.preventDefault();
+      var bad = null;
+      f.querySelectorAll('[data-min-one]').forEach(function (g) {
+        var ok = g.querySelector('input:checked'); g.parentNode.classList.toggle('invalid', !ok); if (!ok && !bad) bad = g;
+      });
+      if (bad) { bad.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
       if (!f.reportValidity()) return;
       var ok = f.querySelector('.ok'); if (ok) ok.classList.add('show');
-      f.querySelectorAll('input:not([type=checkbox]),textarea').forEach(function (i) { if (!i.readOnly) i.value = ''; });
+      f.querySelectorAll('input:not([type=checkbox]):not([type=radio]),textarea').forEach(function (i) { if (!i.readOnly) i.value = ''; }); if (ok) ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   });
 });
