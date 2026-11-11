@@ -13,7 +13,7 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:"Brand","Noto
   font-synthesis:none;font-size:17px;line-height:1.95;-webkit-font-smoothing:antialiased}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
-h1,h2,h3,h4{font-family:"Brand",serif;color:var(--g);line-height:1.5;margin:0 0 .5em;font-weight:normal;text-align:right}
+h1,h2,h3,h4{font-family:"Brand",serif;color:var(--g);line-height:1.5;margin:0 0 .5em;font-weight:normal;text-align:start}
 p{margin:0 0 1em}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
 .muted{color:var(--sage)}
@@ -103,7 +103,7 @@ section.alt .card{background:var(--cream)}
 /* stats */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 .stat{border-inline-start:3px solid var(--gold);padding:6px 20px}
-.stat b{display:block;font-family:"Brand","Noto Naskh Arabic";font-size:38px;color:#fff;line-height:1.3;text-align:right;unicode-bidi:plaintext}
+.stat b{display:block;font-family:"Brand","Noto Naskh Arabic";font-size:38px;color:#fff;line-height:1.3;text-align:start;unicode-bidi:plaintext}
 .stat span{font-size:16px;color:#CFE0DC}
 .source{font-size:14px;color:#9FB9B3;margin-top:26px}
 
@@ -156,8 +156,8 @@ ul.ticks li::before{content:"";position:absolute;right:0;top:11px;width:18px;hei
 
 /* tables (RTL, first column on the right) */
 table{width:100%;border-collapse:separate;border-spacing:0;direction:rtl;background:var(--white);border-radius:14px;overflow:hidden;border:1px solid var(--line);font-size:16px}
-th{background:var(--g);color:#fff;font-family:"Brand";font-weight:normal;text-align:right;padding:14px 18px}
-td{padding:13px 18px;border-top:1px solid var(--line);text-align:right;vertical-align:top}
+th{background:var(--g);color:#fff;font-family:"Brand";font-weight:normal;text-align:start;padding:14px 18px}
+td{padding:13px 18px;border-top:1px solid var(--line);text-align:start;vertical-align:top}
 tr:nth-child(even) td{background:#FAF8F2}
 
 /* org chart */
@@ -415,3 +415,68 @@ mark{background:#F6E7C3;color:inherit;border-radius:4px;padding:0 2px}
 .charter .card h3{display:flex;align-items:center;gap:10px}
 @media (max-width:960px){.types{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:640px){.types{grid-template-columns:1fr}}
+
+/* ---- languages (ar / en / ur) ---- */
+.topbar{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;position:relative}
+.langs{display:flex;gap:4px;position:absolute;inset-inline-end:16px;top:50%;transform:translateY(-50%)}
+.langs a{color:var(--gold-soft);padding:1px 10px;border-radius:999px;font-size:13px;line-height:1.9;font-family:Inter,"Segoe UI",Tahoma,sans-serif}
+.langs a[lang=ur]{font-family:"Nastaliq","Noto Nastaliq Urdu",serif;font-size:14px;line-height:1.6}
+.langs a[lang=ar]{font-family:"Brand",sans-serif}
+.langs a.on{background:var(--gold);color:#fff}
+.langs a:hover{color:#fff}
+@media (max-width:760px){.langs{position:static;transform:none}.topbar{gap:6px 14px}}
+@font-face{font-family:"Inter";src:url("../fonts/inter-latin.woff2") format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Nastaliq";src:url("../fonts/nastaliq-urdu.woff2") format("woff2");font-weight:400 700;font-display:swap}
+/* English (LTR) */
+html[lang=en] body,html[lang=en] input,html[lang=en] select,html[lang=en] textarea,html[lang=en] .chips button{font-family:Inter,"Segoe UI",Arial,sans-serif}
+html[lang=en] h1,html[lang=en] h2,html[lang=en] h3,html[lang=en] h4,html[lang=en] .btn,html[lang=en] th,html[lang=en] summary,html[lang=en] .step b,html[lang=en] .svc b,
+html[lang=en] .gallery figcaption,html[lang=en] .sr b,html[lang=en] .banner div,html[lang=en] .org .node,html[lang=en] .vm .card.dark p,html[lang=en] .ayah .t,
+html[lang=en] .split .photo .badge b,html[lang=en] .stat b,html[lang=en] .step .dot,html[lang=en] .road .card .yr{font-family:Inter,"Segoe UI",Arial,sans-serif;font-weight:700;letter-spacing:-.01em}
+html[lang=en] h1{line-height:1.2}html[lang=en] h2,html[lang=en] h3{line-height:1.3}
+html[lang=en] .ayah .t{font-weight:500;font-style:italic}
+[dir=ltr] .step:not(:last-child)::after{left:50%}
+[dir=ltr] ul.ticks li::before{right:auto;left:0}
+[dir=ltr] .search-box span{right:auto;left:20px}
+[dir=ltr] .type input{left:auto;right:16px}
+[dir=ltr] .banner div{right:auto;left:40px}
+[dir=ltr] .prog-card .thumb .ico{right:auto;left:24px}
+[dir=ltr] .hsearch{padding:2px 2px 2px 4px}
+@media (max-width:640px){[dir=ltr] .banner div{left:20px;right:20px}}
+/* Urdu (Nastaliq) */
+html[lang=ur] body,html[lang=ur] h1,html[lang=ur] h2,html[lang=ur] h3,html[lang=ur] h4,html[lang=ur] .btn,html[lang=ur] th,html[lang=ur] summary,html[lang=ur] input,html[lang=ur] select,html[lang=ur] textarea,
+html[lang=ur] .chips button,html[lang=ur] .step b,html[lang=ur] .svc b,html[lang=ur] .gallery figcaption,html[lang=ur] .sr b,html[lang=ur] .banner div,html[lang=ur] .org .node,
+html[lang=ur] .vm .card.dark p,html[lang=ur] .ayah .t,html[lang=ur] .split .photo .badge b,html[lang=ur] .stat b,html[lang=ur] .step .dot,html[lang=ur] .road .card .yr{font-family:"Nastaliq","Noto Nastaliq Urdu","Noto Naskh Arabic",serif}
+html[lang=ur] body{line-height:2.25}
+html[lang=ur] h1,html[lang=ur] h2,html[lang=ur] h3,html[lang=ur] h4{line-height:2;font-weight:700}
+html[lang=ur] .btn{line-height:1.9;padding-top:8px;padding-bottom:8px}
+html[lang=ur] nav.main a{font-size:15px}
+/* strategy map, business model, added value */
+.smap{display:flex;flex-direction:column;gap:0}
+.smap-row{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:stretch;position:relative;padding-bottom:30px}
+.smap-row:last-child{padding-bottom:0}
+.smap-row:not(:last-child)::after{content:"";position:absolute;bottom:4px;inset-inline-start:calc(170px + 16px + 50% - 93px);width:22px;height:22px;transform:translateX(50%) rotate(180deg);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C49A45' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v16M5 13l7 7 7-7'/%3E%3C/svg%3E") center/contain no-repeat}
+[dir=ltr] .smap-row:not(:last-child)::after{transform:translateX(-50%) rotate(180deg)}
+.smap-lbl{background:var(--g);color:#fff;border-radius:14px;display:grid;place-items:center;text-align:center;padding:12px;font-family:"Brand";font-size:17px}
+.smap-row.top .smap-lbl{background:var(--gold)}
+.smap-boxes{display:flex;gap:12px}
+.smap-boxes div{flex:1;background:#fff;border:1.5px solid #CFE0DA;border-radius:14px;padding:16px 14px;text-align:center;color:var(--g);font-size:16px;display:grid;place-items:center;box-shadow:0 6px 16px rgba(30,79,72,.06)}
+.smap-row:nth-child(2) .smap-boxes div{background:var(--mist)}
+.smap-row:nth-child(4) .smap-boxes div{background:var(--sand)}
+.smap-row.top .smap-boxes div{background:var(--g);color:#fff;border-color:var(--g);font-family:"Brand";font-size:20px}
+.bmc{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.bmc-c{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 22px 14px;box-shadow:0 8px 20px rgba(30,79,72,.05)}
+.bmc-c.key{background:var(--g);border-color:var(--g)}
+.bmc-c.key h3,.bmc-c.key li{color:#fff}
+.bmc-c h3{display:flex;align-items:center;gap:8px;font-size:19px;margin-bottom:10px}
+.bmc-c ul{margin:0;padding-inline-start:20px}
+.bmc-c li{margin-bottom:6px;font-size:15.5px;line-height:1.75}
+.bmc-c li::marker{color:var(--gold)}
+.values-add .card:last-child:nth-child(3n+1){grid-column:1/-1}
+@media (max-width:900px){.bmc{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.bmc{grid-template-columns:1fr}.smap-row{grid-template-columns:1fr;gap:8px}.smap-boxes{flex-direction:column}.smap-row:not(:last-child)::after{inset-inline-start:50%}.values-add .card:last-child:nth-child(3n+1){grid-column:auto}}
+html[lang=en] nav.main a{white-space:nowrap;padding:8px 11px;font-size:15px}
+@media (max-width:1380px) and (min-width:961px){html[lang=en] .hsearch{display:none}html[lang=en] .search-mobile{display:block;margin-inline-start:4px}}
+[dir=ltr] table,[dir=ltr] .mkt .tags span{direction:ltr}
+[dir=ltr] .page-hero::before{background:linear-gradient(90deg,rgba(248,245,238,.97) 0%,rgba(248,245,238,.88) 48%,rgba(248,245,238,.15) 100%)}
+@media (max-width:640px){[dir=ltr] .page-hero::before{background:rgba(248,245,238,.9)}}
+[dir=ltr] .search-box input{padding-left:64px;padding-right:22px}

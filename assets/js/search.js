@@ -8,7 +8,14 @@
   }
   IDX.forEach(function (it) { it._t = norm(it.t); it._x = norm(it.x); });
   var q = document.getElementById('sq'), res = document.getElementById('sres'), cnt = document.getElementById('scount');
-  var filter = 'الكل';
+  var L = document.documentElement.lang || 'ar';
+  var M = {
+    ar: { hint: function (n) { return 'اكتب كلمة أو أكثر للبحث في ' + n + ' عنصرًا (صفحات وبرامج ولوائح وسياسات).'; }, count: 'عدد النتائج: ', none: 'لا توجد نتائج مطابقة، جرّب كلمة أخرى.' },
+    en: { hint: function (n) { return 'Type one or more words to search ' + n + ' items (pages, programs and document titles).'; }, count: 'Results: ', none: 'No matching results. Try another word.' },
+    ur: { hint: function (n) { return 'تلاش کے لیے ایک یا زیادہ الفاظ لکھیں (' + n + ' صفحات، پروگرام اور دستاویزات کے عنوانات)۔'; }, count: 'نتائج کی تعداد: ', none: 'کوئی نتیجہ نہیں ملا، کوئی اور لفظ آزمائیں۔' }
+  }[L] || null;
+  var first = document.querySelector('#sf button');
+  var filter = first ? first.dataset.f : 'الكل', ALL = filter;
   function esc(s) { return s.replace(/[&<>"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   function snippet(it, terms) {
     var raw = it.x, n = norm(raw), pos = -1;
@@ -26,10 +33,10 @@
   function run() {
     var v = norm(q.value.trim());
     var terms = v.split(/\s+/).filter(function (t) { return t.length > 1; });
-    if (!terms.length) { res.innerHTML = ''; cnt.textContent = 'اكتب كلمة أو أكثر للبحث في ' + IDX.length + ' عنصرًا (صفحات وبرامج ولوائح وسياسات).'; return; }
+    if (!terms.length) { res.innerHTML = ''; cnt.textContent = M.hint(IDX.length); return; }
     var hits = [];
     IDX.forEach(function (it) {
-      if (filter !== 'الكل' && it.c !== filter) return;
+      if (filter !== ALL && it.c !== filter) return;
       var score = 0, all = true;
       terms.forEach(function (t) {
         var inT = it._t.indexOf(t) >= 0, inX = it._x.indexOf(t) >= 0;
@@ -39,9 +46,9 @@
       if (all) hits.push({ it: it, s: score });
     });
     hits.sort(function (a, b) { return b.s - a.s; });
-    cnt.textContent = hits.length ? ('عدد النتائج: ' + hits.length) : 'لا توجد نتائج مطابقة، جرّب كلمة أخرى.';
+    cnt.textContent = hits.length ? (M.count + hits.length) : M.none;
     res.innerHTML = hits.slice(0, 40).map(function (h) {
-      var it = h.it, doc = it.u.indexOf('docs/') === 0;
+      var it = h.it, doc = /^(\.\.\/)?(docs|kits)\//.test(it.u);
       return '<a class="sr" href="' + encodeURI(it.u) + '"' + (doc ? ' target="_blank"' : '') + '>' +
         '<span class="sr-cat">' + esc(it.c) + (doc ? ' · PDF' : ' · ' + esc(it.p)) + '</span>' +
         '<b>' + esc(it.t) + '</b><span class="sr-x">' + snippet(it, terms) + '</span></a>';
