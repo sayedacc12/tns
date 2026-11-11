@@ -60,3 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('hashchange', function () { show(location.hash.slice(1), true); });
   show(location.hash.slice(1) || 'umrah', !!location.hash);
 });
+// قائمة اللغات: إغلاق عند النقر خارجها
+document.addEventListener('click', function (e) {
+  document.querySelectorAll('details.langs[open]').forEach(function (d) { if (!d.contains(e.target)) d.removeAttribute('open'); });
+});
