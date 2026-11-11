@@ -351,3 +351,9 @@ mark{background:#F6E7C3;color:inherit;border-radius:4px;padding:0 2px}
 .mkt .slogan{font-family:"Brand";color:var(--g);font-size:24px;margin-bottom:12px}
 .mkt .tags{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 16px}
 .mkt .tags span{font-size:14px;color:var(--teal-soft);background:#fff;border-radius:999px;padding:2px 12px;direction:rtl}
+
+/* تبويبات البرامج */
+.tabs-on article.prog{display:none;border-bottom:0}
+.tabs-on article.prog.active{display:grid;animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.prog-tabs a.on{background:var(--g);color:#fff;border-color:var(--g)}
