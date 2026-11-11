@@ -80,7 +80,7 @@
 <div><label for="v2">Date of birth *</label><input id="v2" required="" type="date"/></div>
 <div><label>Nationality *</label><div class="opts"><label><input name="n" required="" type="radio"/> Saudi</label><label><input name="n" type="radio"/> Resident</label></div></div>
 <div><label for="v3">National ID or Iqama number *</label><input id="v3" inputmode="numeric" maxlength="10" pattern="[12][0-9]{9}" placeholder="10 digits" required=""/></div>
-<div><label for="v4">Mobile number *</label><input id="v4" pattern="05[0-9]{8}" placeholder="05xxxxxxxx" required="" type="tel"/></div>
+<div><label for="v4">Mobile number *</label><input autocomplete="tel-national" data-sa-mobile="" dir="ltr" id="v4" inputmode="numeric" maxlength="10" pattern="05[0-9]{8}" placeholder="05xxxxxxxx" required="" type="tel"/></div>
 <div><label for="v5">Email</label><input id="v5" type="email"/></div>
 <div><label for="v6">City of residence *</label><input id="v6" required=""/></div>
 <div><label for="v7">District</label><input id="v7"/></div>
@@ -126,7 +126,7 @@
 <div class="fgrid">
 <div class="full"><label>Do you have health conditions that limit field participation? *</label><div class="opts"><label><input name="h" required="" type="radio"/> No</label><label><input name="h" type="radio"/> Yes (we will contact you to choose a suitable task)</label></div></div>
 <div><label for="e1">Emergency contact name *</label><input id="e1" required=""/></div>
-<div><label for="e2">Their mobile *</label><input id="e2" pattern="05[0-9]{8}" placeholder="05xxxxxxxx" required="" type="tel"/></div>
+<div><label for="e2">Their mobile *</label><input autocomplete="tel-national" data-sa-mobile="" dir="ltr" id="e2" inputmode="numeric" maxlength="10" pattern="05[0-9]{8}" placeholder="05xxxxxxxx" required="" type="tel"/></div>
 </div>
 </fieldset>
 <fieldset><legend><span>6</span> Additional information</legend>

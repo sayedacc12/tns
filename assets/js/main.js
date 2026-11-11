@@ -64,3 +64,32 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('click', function (e) {
   document.querySelectorAll('details.langs[open]').forEach(function (d) { if (!d.contains(e.target)) d.removeAttribute('open'); });
 });
+// حقول الجوال: أرقام فقط بصيغة الجوال السعودي 05xxxxxxxx (تحويل الأرقام العربية والفارسية تلقائيًا)
+(function () {
+  var MSG = {
+    ar: 'أدخل رقم جوال سعودي صحيحًا من 10 أرقام يبدأ بـ 05، مثل 0512345678.',
+    en: 'Enter a valid Saudi mobile number: 10 digits starting with 05, e.g. 0512345678.',
+    ur: 'درست سعودی موبائل نمبر درج کریں: 05 سے شروع ہونے والے 10 ہندسے، مثلاً 0512345678۔'
+  }[document.documentElement.lang] || '';
+  function norm(v) {
+    return v.replace(/[٠-٩]/g, function (d) { return d.charCodeAt(0) - 1632; })
+            .replace(/[۰-۹]/g, function (d) { return d.charCodeAt(0) - 1776; })
+            .replace(/\D/g, '').slice(0, 10);
+  }
+  function check(el) {
+    var v = el.value;
+    el.setCustomValidity(v && !/^05[0-9]{8}$/.test(v) ? MSG : '');
+  }
+  document.querySelectorAll('input[data-sa-mobile]').forEach(function (el) {
+    el.addEventListener('input', function () {
+      var n = norm(el.value);
+      if (n !== el.value) el.value = n;
+      check(el);
+    });
+    el.addEventListener('keydown', function (e) {
+      if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !/[0-9٠-٩۰-۹]/.test(e.key)) e.preventDefault();
+    });
+    el.addEventListener('blur', function () { check(el); });
+    check(el);
+  });
+})();

@@ -83,7 +83,7 @@
      <div><label for="v2">تاريخ الميلاد *</label><input id="v2" type="date" required></div>
      <div><label>الجنسية *</label><div class="opts"><label><input type="radio" name="n" required> سعودي</label><label><input type="radio" name="n"> مقيم</label></div></div>
      <div><label for="v3">رقم الهوية الوطنية أو الإقامة *</label><input id="v3" inputmode="numeric" pattern="[12][0-9]{9}" maxlength="10" placeholder="10 أرقام" required></div>
-     <div><label for="v4">رقم الجوال *</label><input id="v4" type="tel" pattern="05[0-9]{8}" placeholder="05xxxxxxxx" required></div>
+     <div><label for="v4">رقم الجوال *</label><input id="v4" type="tel" inputmode="numeric" dir="ltr" maxlength="10" pattern="05[0-9]{8}" data-sa-mobile autocomplete="tel-national" placeholder="05xxxxxxxx" required></div>
      <div><label for="v5">البريد الإلكتروني</label><input id="v5" type="email"></div>
      <div><label for="v6">مدينة الإقامة *</label><input id="v6" required></div>
      <div><label for="v7">الحي</label><input id="v7"></div>
@@ -133,7 +133,7 @@
     <div class="fgrid">
      <div class="full"><label>هل لديك ظروف صحية تحدّ من المشاركة الميدانية؟ *</label><div class="opts"><label><input type="radio" name="h" required> لا</label><label><input type="radio" name="h"> نعم (سنتواصل معك لاختيار المهمة المناسبة)</label></div></div>
      <div><label for="e1">اسم شخص للتواصل في الطوارئ *</label><input id="e1" required></div>
-     <div><label for="e2">جواله *</label><input id="e2" type="tel" pattern="05[0-9]{8}" placeholder="05xxxxxxxx" required></div>
+     <div><label for="e2">جواله *</label><input id="e2" type="tel" inputmode="numeric" dir="ltr" maxlength="10" pattern="05[0-9]{8}" data-sa-mobile autocomplete="tel-national" placeholder="05xxxxxxxx" required></div>
     </div>
    </fieldset>
 

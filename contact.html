@@ -40,7 +40,7 @@
     <h3><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg> أرسل رسالتك</h3>
     <div class="fgrid">
      <div><label for="cn">الاسم</label><input id="cn" required></div>
-     <div><label for="cm">رقم الجوال</label><input id="cm" type="tel" placeholder="05xxxxxxxx"></div>
+     <div><label for="cm">رقم الجوال</label><input id="cm" type="tel" inputmode="numeric" dir="ltr" maxlength="10" pattern="05[0-9]{8}" data-sa-mobile autocomplete="tel-national" placeholder="05xxxxxxxx"></div>
      <div><label for="ce">البريد الإلكتروني</label><input id="ce" type="email" required></div>
      <div><label for="ct">نوع الرسالة</label><select id="ct"><option>استفسار عام</option><option>ترشيح مستفيد</option><option>طلب شراكة</option><option>تطوع</option><option>اقتراح</option><option>شكوى</option></select></div>
      <div class="full"><label for="cx">الرسالة</label><textarea id="cx" required></textarea></div>
