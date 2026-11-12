@@ -66,14 +66,14 @@
     var gift = r.gift ? here + '?' + r.gift.link : '';
     box.innerHTML = (extra || '') +
       '<article class="rcp-doc">' +
-      '<header class="rcp-h"><img src="' + LOGO + '" alt="جمعية تيسير النسك"><div><h1>سند قبض تبرع</h1><span>Donation Receipt</span></div>' +
+      '<header class="rcp-h"><img src="' + LOGO + '" alt="جمعية تيسير النسك"><div><h1>' + (r.waqf ? 'سند قبض تبرع وقفي' : 'سند قبض تبرع') + '</h1><span>' + (r.waqf ? 'Waqf Donation Receipt' : 'Donation Receipt') + '</span></div>' +
       '<dl class="rcp-no"><dt>رقم السند</dt><dd dir="ltr">' + esc(r.no) + '</dd></dl></header>' +
-      '<div class="rcp-thanks">جزاك الله خيرًا، وتقبّل منك. نشهد باستلام تبرعك الكريم لصالح جمعية تيسير النسك.</div>' +
+      '<div class="rcp-thanks">' + (r.waqf ? 'جزاك الله خيرًا، وجعله صدقة جارية لك. نشهد باستلام تبرعك الوقفي لصالح وقف جمعية تيسير النسك، ويُحفظ أصله ويُصرف ريعه في أعمال الجمعية.' : 'جزاك الله خيرًا، وتقبّل منك. نشهد باستلام تبرعك الكريم لصالح جمعية تيسير النسك.') + '</div>' +
       '<table class="rcp-t"><tbody>' +
       '<tr><th>استلمنا من</th><td>' + esc(r.donor) + '</td></tr>' +
       '<tr><th>رقم الجوال</th><td dir="ltr" class="ltr">' + esc(r.phone) + '</td></tr>' +
       '<tr><th>مبلغ وقدره</th><td><b class="rcp-amt">' + num(r.amount) + ' ريال</b><div class="rcp-w">' + words(r.amount) + '</div></td></tr>' +
-      '<tr><th>وذلك عن</th><td>' + esc(proj) + (r.monthly ? ' <span class="rcp-tag">تبرع شهري</span>' : '') + (r.gift ? ' <span class="rcp-tag">إهداء إلى: ' + esc(r.gift.to) + '</span>' : '') + '</td></tr>' +
+      '<tr><th>وذلك عن</th><td>' + esc(proj) + (r.waqf ? ' <span class="rcp-tag">تبرع وقفي</span>' : '') + (r.monthly ? ' <span class="rcp-tag">تبرع شهري</span>' : '') + (r.gift ? ' <span class="rcp-tag">إهداء إلى: ' + esc(r.gift.to) + '</span>' : '') + '</td></tr>' +
       '<tr><th>التاريخ</th><td>' + dates(r.date) + '</td></tr>' +
       '<tr><th>طريقة الدفع</th><td>' + esc(method) + (r.last4 ? ' <span dir="ltr">•••• ' + esc(r.last4) + '</span>' : '') + ' عبر بوابة ميسّر</td></tr>' +
       (r.ref ? '<tr><th>مرجع العملية</th><td dir="ltr" class="ltr small">' + esc(r.ref) + '</td></tr>' : '') +
@@ -92,7 +92,7 @@
     var proj = g.general ? 'تبرع عام لأعمال الجمعية' : (g.project && g.project.ar) || '';
     box.innerHTML = '<article class="gcard"><img class="glogo" src="assets/img/logo-white.svg" alt="جمعية تيسير النسك">' +
       '<div class="gkick">بطاقة إهداء</div><h1>إلى ' + esc(g.to) + '</h1>' +
-      '<p class="gtext">أُهدي إليك تبرعًا في <b>' + esc(proj) + '</b>، لتيسير أداء المناسك لغير القادرين من ضيوف الرحمن، سائلًا الله أن يجعل أجره لك.</p>' +
+      '<p class="gtext">أُهدي إليك ' + (g.waqf ? 'تبرعًا وقفيًا صدقةً جارية' : 'تبرعًا') + ' في <b>' + esc(proj) + '</b>، لتيسير أداء المناسك لغير القادرين من ضيوف الرحمن، سائلًا الله أن يجعل أجره لك.</p>' +
       (g.msg ? '<blockquote>' + esc(g.msg) + '</blockquote>' : '') +
       '<div class="gfrom">من: ' + esc(g.from) + '</div><div class="gdate">' + dates(g.date).split(' · ').slice(0, 2).join(' · ') + '</div>' +
       '<div class="gfoot">جمعية تيسير النسك · مدينة الرياض</div></article>';
@@ -104,7 +104,7 @@
     var proj = v.general ? 'تبرع عام غير مقيد' : (v.project && v.project.ar) || '';
     box.innerHTML = '<div class="rcp-msg good"><div class="vok">✓</div><h1>سند صحيح</h1><p>هذا السند صادر من جمعية تيسير النسك ومسجل في نظامها.</p>' +
       '<table class="rcp-t"><tbody><tr><th>رقم السند</th><td dir="ltr" class="ltr">' + esc(v.no) + '</td></tr><tr><th>المبلغ</th><td>' + num(v.amount) + ' ريال</td></tr>' +
-      '<tr><th>المشروع</th><td>' + esc(proj) + '</td></tr><tr><th>التاريخ</th><td>' + dates(v.date) + '</td></tr></tbody></table></div>';
+      '<tr><th>المشروع</th><td>' + esc(proj) + (v.waqf ? ' <span class="rcp-tag">تبرع وقفي</span>' : '') + '</td></tr><tr><th>التاريخ</th><td>' + dates(v.date) + '</td></tr></tbody></table></div>';
   }
 
   function monthlyBanner(m) {

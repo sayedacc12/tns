@@ -12,26 +12,32 @@
       closed: 'التبرع الإلكتروني غير متاح حاليًا.', country: 'نعتذر، تُقبل التبرعات من داخل المملكة العربية السعودية فقط.', gateway: 'تعذر الاتصال ببوابة الدفع، حاول بعد قليل.',
       no_gateway: 'بوابة الدفع لم تُفعّل بعد.', rate: 'محاولات كثيرة، انتظر دقائق ثم حاول مجددًا.', net: 'تعذر الاتصال، تحقق من الإنترنت وحاول مجددًا.', project: 'هذا المشروع لا يستقبل تبرعات حاليًا.',
       wait: 'جارٍ التحويل إلى صفحة الدفع...', general: 'تبرع عام غير مقيد', other: 'مبلغ آخر', bank: 'البنك', bname: 'اسم الحساب', iban: 'الآيبان', acc: 'رقم الحساب', copy: 'نسخ', giftTo: 'أدخل اسم المُهدى إليه.',
-      monthlyPay: 'أدخل بيانات البطاقة لتفعيل التبرع الشهري. يُخصم المبلغ الآن ثم في اليوم نفسه من كل شهر، ويمكنك إيقافه في أي وقت.', donors: 'تبرع' },
+      monthlyPay: 'أدخل بيانات البطاقة لتفعيل التبرع الشهري. يُخصم المبلغ الآن ثم في اليوم نفسه من كل شهر، ويمكنك إيقافه في أي وقت.', donors: 'تبرع',
+      quick: 'تبرع سريع', quickKick: 'مبلغ ورقم جوال فقط، ويُقيد تبرعًا عامًا.', kick: 'التبرع لـ', waqfKick: 'تبرع وقفي لـ', waqf: 'وقف', share: 'سهم الوقف {min} ريال',
+      ended: 'انتهت حملة التبرع لهذا المشروع.', full: 'اكتمل مستهدف هذا المشروع، شكرًا لكم.', endedB: 'انتهت الحملة', fullB: 'اكتمل المستهدف' },
     en: { sar: 'SAR', don: 'donations', give: 'Donate to this project', of: 'of', goal: 'Goal', done: 'Goal reached', copied: 'Donation link copied',
       phone: 'Enter a valid Saudi mobile number starting with 05 (10 digits).', amount: 'The minimum donation is {min} SAR.', max: 'The maximum single donation is {max} SAR.',
       closed: 'Online donations are not available at the moment.', country: 'Sorry, donations are accepted from inside Saudi Arabia only.', gateway: 'Could not reach the payment gateway. Please try again shortly.',
       no_gateway: 'The payment gateway is not active yet.', rate: 'Too many attempts. Please wait a few minutes.', net: 'Connection failed. Check your internet and try again.', project: 'This project is not accepting donations at the moment.',
       wait: 'Taking you to the payment page...', general: 'General donation (unrestricted)', other: 'Other amount', bank: 'Bank', bname: 'Account name', iban: 'IBAN', acc: 'Account no.', copy: 'Copy', giftTo: 'Enter the recipient\'s name.',
-      monthlyPay: 'Enter your card to start the monthly donation. The amount is charged now and on the same day every month; you can stop it at any time.', donors: 'donations' },
+      monthlyPay: 'Enter your card to start the monthly donation. The amount is charged now and on the same day every month; you can stop it at any time.', donors: 'donations',
+      quick: 'Quick donation', quickKick: 'Just an amount and a mobile number, recorded as a general donation.', kick: 'Donating to', waqfKick: 'Endowment (waqf) donation to', waqf: 'Waqf', share: 'One waqf share is {min} SAR',
+      ended: 'The donation campaign for this project has ended.', full: 'This project has reached its goal. Thank you.', endedB: 'Campaign ended', fullB: 'Goal reached' },
     ur: { sar: 'ریال', don: 'عطیات', give: 'اس منصوبے کے لیے عطیہ', of: 'میں سے', goal: 'ہدف', done: 'ہدف مکمل', copied: 'عطیہ کا لنک کاپی ہو گیا',
       phone: '05 سے شروع ہونے والا درست سعودی موبائل نمبر درج کریں (10 ہندسے)۔', amount: 'کم از کم عطیہ {min} ریال ہے۔', max: 'ایک عطیہ کی زیادہ سے زیادہ رقم {max} ریال ہے۔',
       closed: 'آن لائن عطیات فی الحال دستیاب نہیں۔', country: 'معذرت، عطیات صرف سعودی عرب کے اندر سے قبول کیے جاتے ہیں۔', gateway: 'ادائیگی گیٹ وے سے رابطہ نہیں ہو سکا، تھوڑی دیر بعد کوشش کریں۔',
       no_gateway: 'ادائیگی گیٹ وے ابھی فعال نہیں۔', rate: 'بہت زیادہ کوششیں، چند منٹ انتظار کریں۔', net: 'رابطہ ناکام، انٹرنیٹ چیک کر کے دوبارہ کوشش کریں۔', project: 'یہ منصوبہ فی الحال عطیات قبول نہیں کر رہا۔',
       wait: 'ادائیگی کے صفحے پر منتقل کیا جا رہا ہے...', general: 'عمومی عطیہ (غیر مخصوص)', other: 'دوسری رقم', bank: 'بینک', bname: 'اکاؤنٹ کا نام', iban: 'آئی بان', acc: 'اکاؤنٹ نمبر', copy: 'کاپی', giftTo: 'جسے تحفہ دیا جا رہا ہے اس کا نام درج کریں۔',
-      monthlyPay: 'ماہانہ عطیہ شروع کرنے کے لیے کارڈ درج کریں۔ رقم ابھی اور ہر ماہ اسی دن کٹے گی؛ آپ کسی بھی وقت روک سکتے ہیں۔', donors: 'عطیات' }
+      monthlyPay: 'ماہانہ عطیہ شروع کرنے کے لیے کارڈ درج کریں۔ رقم ابھی اور ہر ماہ اسی دن کٹے گی؛ آپ کسی بھی وقت روک سکتے ہیں۔', donors: 'عطیات',
+      quick: 'فوری عطیہ', quickKick: 'صرف رقم اور موبائل نمبر، عمومی عطیے کے طور پر درج ہوگا۔', kick: 'عطیہ برائے', waqfKick: 'وقف عطیہ برائے', waqf: 'وقف', share: 'وقف کا ایک حصہ {min} ریال',
+      ended: 'اس منصوبے کی عطیہ مہم ختم ہو چکی ہے۔', full: 'اس منصوبے کا ہدف پورا ہو گیا، شکریہ۔', endedB: 'مہم ختم', fullB: 'ہدف مکمل' }
   }[LANG] || {};
   var $ = function (s, r) { return (r || document).querySelector(s); }, $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var tx = function (o) { return o ? (o[LANG] || o.ar || '') : ''; };
   var num = function (n) { return Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 }); };
   var S = { enabled: false, min: 20, max: 100000, presets: [50, 100, 200, 500], totals: { all: { s: 0, c: 0 } }, banks: [], gift: true, monthly: false };
-  var projects = null;
+  var projects = null, CUR = { min: 20, max: 100000, gift: true, monthly: false, quick: false };
 
   function normPhone(v) {
     var p = String(v || '').replace(/[\s\-()]/g, '').replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/^(\+966|00966|966)/, '0');
@@ -40,8 +46,8 @@
   }
   function check(f, quick) {
     var a = Number(f.amount.value), ph = normPhone(f.phone.value);
-    if (!(a >= S.min)) return T.amount.replace('{min}', S.min);
-    if (a > S.max) return T.max.replace('{max}', num(S.max));
+    if (!(a >= CUR.min)) return T.amount.replace('{min}', num(CUR.min));
+    if (a > CUR.max) return T.max.replace('{max}', num(CUR.max));
     if (!ph) return T.phone;
     if (!quick && f.gift && f.gift.checked && !f.gift_to.value.trim()) return T.giftTo;
     return '';
@@ -54,7 +60,7 @@
   }
   function fail(f, e, btn) {
     var c = (e && e.error) || 'gateway';
-    err(f, c === 'amount' ? T.amount.replace('{min}', e.min || S.min) : (T[c] || T.gateway));
+    err(f, c === 'amount' ? T.amount.replace('{min}', num(e.min || CUR.min)) : (T[c] || T.gateway));
     if (btn) btn.disabled = false;
   }
   function go(f, body) {
@@ -64,9 +70,9 @@
   }
 
   // ---------- amount presets ----------
-  function presets(box, input) {
+  function presets(box, input, list) {
     if (!box) return;
-    box.innerHTML = S.presets.map(function (v) { return '<button type="button" data-v="' + v + '">' + num(v) + '</button>'; }).join('') +
+    box.innerHTML = (list || S.presets).map(function (v) { return '<button type="button" data-v="' + v + '">' + num(v) + '</button>'; }).join('') +
       '<button type="button" data-v="">' + T.other + '</button>';
     box.onclick = function (e) {
       var b = e.target.closest('button'); if (!b) return;
@@ -74,16 +80,6 @@
       input.value = b.dataset.v; if (!b.dataset.v) input.focus();
     };
     input.addEventListener('input', function () { $$('button', box).forEach(function (x) { x.classList.toggle('on', x.dataset.v === input.value); }); });
-  }
-
-  // ---------- quick donation ----------
-  var q = $('#quick');
-  if (q) {
-    presets($('.chips', q), q.amount);
-    q.addEventListener('submit', function (e) {
-      e.preventDefault(); var m = check(q, true); if (m) return err(q, m);
-      go(q, { quick: true, amount: Number(q.amount.value), phone: normPhone(q.phone.value) });
-    });
   }
 
   // ---------- project dialog ----------
@@ -94,26 +90,43 @@
     if (p) return tx(p.name);
     var c = $('.dcard[data-p="' + id + '"] h3'); return c ? c.textContent : '';
   }
+  function storeOf(id) {
+    var p = (projects || []).filter(function (x) { return x.id === id; })[0];
+    return p && p.store ? p.store : { on: true, kind: 'project', goal: p ? p.goal || 0 : 0, min: 0, max: 0, presets: [], monthly: true, gift: true };
+  }
+  function blockOf(p) {
+    var s = p.store || {}, t = S.totals[p.id] || { s: 0 };
+    if (s.end && s.end < new Date(Date.now() + 3 * 3600000).toISOString().slice(0, 10)) return 'ended';
+    if (s.stop && s.goal && t.s >= s.goal) return 'full';
+    return '';
+  }
+  // id: a project id, 'general', or 'quick' (amount and mobile only, recorded as a general donation)
   function open(id) {
     if (!S.enabled || !dlg) return;
-    df.reset(); err(df, ''); df.project.value = id; $('#d-title').textContent = nameOf(id);
-    df.amount.min = S.min; df.amount.placeholder = S.min;
-    $$('.chips button', df).forEach(function (x) { x.classList.remove('on'); });
-    $('#d-gift').hidden = true; $('.giftrow', df).hidden = !S.gift; $('.freq', df).hidden = !S.monthly;
+    var quick = id === 'quick', s = quick || id === 'general' ? {} : storeOf(id);
+    CUR = { quick: quick, min: Math.max(S.min, s.min || 0), max: Math.min(S.max, s.max || S.max), gift: S.gift && s.gift !== false && !quick, monthly: S.monthly && s.monthly !== false && !quick };
+    var list = (s.presets && s.presets.length ? s.presets : S.presets).filter(function (v) { return v >= CUR.min && v <= CUR.max; });
+    df.reset(); err(df, ''); df.project.value = quick ? 'general' : id;
+    $('#d-title').textContent = quick ? T.quick : nameOf(id);
+    $('#d-kick').textContent = quick ? T.quickKick : s.kind === 'waqf' ? T.waqfKick : T.kick;
+    df.amount.min = CUR.min; df.amount.placeholder = s.kind === 'waqf' ? T.share.replace('{min}', num(CUR.min)) : CUR.min;
+    presets($('.chips', df), df.amount, list);
+    df.name.closest('label').hidden = quick;
+    $('#d-gift').hidden = true; $('.giftrow', df).hidden = !CUR.gift; $('.freq', df).hidden = !CUR.monthly;
     $('#d-mysr').hidden = true; $('#d-fields').hidden = false;
     var b = $('[type=submit]', df); b.disabled = false; b.hidden = false;
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
   }
   if (dlg) {
-    presets($('.chips', df), df.amount);
     $('.dx', df).onclick = function () { dlg.close ? dlg.close() : dlg.removeAttribute('open'); };
     dlg.addEventListener('click', function (e) { if (e.target === dlg) $('.dx', df).onclick(); });
     df.gift.addEventListener('change', function () { $('#d-gift').hidden = !df.gift.checked; });
     df.addEventListener('submit', function (e) {
       e.preventDefault(); var m = check(df, false); if (m) return err(df, m);
+      if (CUR.quick) return go(df, { quick: true, amount: Number(df.amount.value), phone: normPhone(df.phone.value) });
       var body = { project: df.project.value, amount: Number(df.amount.value), name: df.name.value.trim(), phone: normPhone(df.phone.value) };
-      if (S.monthly && df.freq.value === 'monthly') return monthly(body);
-      if (S.gift && df.gift.checked) body.gift = { to: df.gift_to.value.trim(), msg: df.gift_msg.value.trim() };
+      if (CUR.monthly && df.freq.value === 'monthly') return monthly(body);
+      if (CUR.gift && df.gift.checked) body.gift = { to: df.gift_to.value.trim(), msg: df.gift_msg.value.trim() };
       go(df, body);
     });
   }
@@ -148,17 +161,16 @@
     var list = $('#store-list'); if (!list) return;
     if (projects) {
       var gen = $('.dcard.general', list);
-      var html = projects.filter(function (p) { return p.donate !== false; }).map(function (p) {
-        var img = p.image ? API + '/img/' + p.image : PRE + 'assets/img/scenes/' + (p.scene || 'haram') + '.svg';
-        return '<article class="dcard" data-p="' + esc(p.id) + '"><div class="dimg" style="background-image:url(' + esc(img) + ')"></div><div class="db"><h3>' + esc(tx(p.name)) + '</h3><p>' + esc(tx(p.summary)) + '</p>' +
-          '<div class="dmeter"></div><div class="dacts"><button class="btn btn-gold" type="button" data-give="' + esc(p.id) + '">' + T.give + '</button>' +
+      var html = projects.filter(function (p) { return p.store ? p.store.on : p.donate !== false; }).map(function (p) {
+        var img = p.image ? API + '/img/' + p.image : PRE + 'assets/img/scenes/' + (p.scene || 'haram') + '.svg', w = p.store && p.store.kind === 'waqf', b = blockOf(p);
+        return '<article class="dcard' + (w ? ' waqf' : '') + (b ? ' closed' : '') + '" data-p="' + esc(p.id) + '"><div class="dimg" style="background-image:url(' + esc(img) + ')">' + (w ? '<span class="dtag">' + T.waqf + '</span>' : '') + '</div><div class="db"><h3>' + esc(tx(p.name)) + '</h3><p>' + esc(tx(p.summary)) + '</p>' +
+          '<div class="dmeter"></div><div class="dacts">' + (b ? '<span class="dshut">' + T[b + 'B'] + '</span>' : '<button class="btn btn-gold" type="button" data-give="' + esc(p.id) + '">' + T.give + '</button>') +
           '<button class="dlink" type="button" data-copy="' + esc(p.id) + '">' + ($('.dlink', list) ? $('.dlink', list).innerHTML : T.copy) + '</button></div></div></article>';
       }).join('');
       list.innerHTML = ''; list.appendChild(gen); list.insertAdjacentHTML('beforeend', html);
     }
-    var goals = {}; (projects || []).forEach(function (p) { goals[p.id] = p.goal || 0; });
-    $$('.dcard', list).forEach(function (c) { meter(c, c.dataset.p, goals[c.dataset.p]); });
-    $('#st-sum').textContent = num(S.totals.all.s); $('#st-cnt').textContent = num(S.totals.all.c);
+    var goals = {}; (projects || []).forEach(function (p) { goals[p.id] = p.store ? p.store.goal : p.goal || 0; });
+    $$('.dcard', list).forEach(function (c) { if (c.dataset.p !== 'general') meter(c, c.dataset.p, goals[c.dataset.p]); });
     document.body.classList.toggle('store-on', !!S.enabled);
     $('#store-closed').hidden = !!S.enabled;
     var bl = $('#bank-list');
@@ -171,7 +183,7 @@
       }).join('');
     }
     var m = location.search.match(/[?&]p=([a-z0-9-]+)/);
-    if (m && S.enabled && !render.opened) { render.opened = true; var c = $('.dcard[data-p="' + m[1] + '"]'); if (c) { c.scrollIntoView({ block: 'center' }); open(m[1]); } }
+    if (m && S.enabled && !render.opened) { render.opened = true; var c = $('.dcard[data-p="' + m[1] + '"]'); if (c) { c.scrollIntoView({ block: 'center' }); if (!c.classList.contains('closed')) open(m[1]); } }
   }
   function toast(t) { var d = document.createElement('div'); d.className = 'dtoast'; d.textContent = t; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 2200); }
   function copy(t) { (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { toast(T.copied); }).catch(function () { window.prompt('', t); }); }
@@ -188,8 +200,6 @@
   ]).then(function (r) {
     if (r[0]) { for (var k in r[0]) S[k] = r[0][k]; }
     if (r[1] && r[1].projects) projects = r[1].projects;
-    presets(q && $('.chips', q), q && q.amount); if (df) presets($('.chips', df), df.amount);
-    if (q) { q.amount.min = S.min; q.amount.placeholder = S.min; }
     render();
   });
 })();

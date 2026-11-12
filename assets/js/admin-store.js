@@ -7,11 +7,11 @@
   var C1 = '#00897B', C2 = '#B9822A', MUTED = '#9AA9A5'; // validated pair (teal / gold) + muted comparison line
   var RAMP = ['#EEF6F4', '#C9E6E0', '#8FCBC0', '#3FA595', '#00796B', '#004D44'];
   var DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-  var TYPES = { project: 'تبرع لمشروع', general: 'تبرع عام', quick: 'تبرع سريع', monthly: 'تبرع شهري', gift: 'تبرع إهدائي' };
+  var TYPES = { project: 'تبرع لمشروع', general: 'تبرع عام', quick: 'تبرع سريع', monthly: 'تبرع شهري', gift: 'تبرع إهدائي', waqf: 'تبرع وقفي' };
   var STATUS = { paid: ['مكتمل', 'green'], initiated: ['لم يكتمل', 'gray'], failed: ['فشل', 'red'], refunded: ['مُعاد (بطاقة أجنبية)', 'amber'], review: ['يحتاج مراجعة', 'amber'] };
   var METHOD = { mada: 'مدى', visa: 'Visa', master: 'Mastercard', amex: 'Amex', applepay: 'Apple Pay', stcpay: 'STC Pay', creditcard: 'بطاقة', '': 'غير محدد' };
 
-  var DONS = null, SUBS = [], NAMES = { general: 'تبرع عام غير مقيد' }, GOALS = {};
+  var DONS = null, SUBS = [], NAMES = { general: 'تبرع عام غير مقيد' }, GOALS = {}, LIVE = {};
   var F = { range: '30d', from: '', to: '', project: '', type: '', status: 'paid', q: '', compare: true };
 
   // ---------- numbers & dates ----------
@@ -79,7 +79,7 @@
     var A1 = A.call('GET', '/api/admin/donations'), A2 = A.call('GET', '/api/admin/projects'), A3 = A.call('GET', '/api/admin/subscriptions').catch(function () { return { subscriptions: [] }; });
     return Promise.all([A1, A2, A3]).then(function (r) {
       DONS = r[0].donations || [];
-      (r[1].projects || []).forEach(function (p) { NAMES[p.id] = p.name.ar; GOALS[p.id] = p.goal || 0; });
+      (r[1].projects || []).forEach(function (p) { NAMES[p.id] = p.name.ar; GOALS[p.id] = (p.store && p.store.on ? p.store.goal : p.goal) || 0; LIVE[p.id] = p.status === 'approved' && p.published && p.store && p.store.on; });
       SUBS = r[2].subscriptions || [];
     });
   }
@@ -89,7 +89,7 @@
       if ((opts.status || 'paid') !== 'all' && d.s !== (opts.status || 'paid')) return false;
       var w = when(d); if (w < r.from || w >= r.to) return false;
       if (F.project && (d.p || 'general') !== F.project) return false;
-      if (F.type === 'gift' ? !d.g : F.type && typeOf(d) !== F.type) return false;
+      if (F.type === 'gift' ? !d.g : F.type === 'waqf' ? !d.w : F.type && typeOf(d) !== F.type) return false;
       if (opts.q) { var q = opts.q.toLowerCase(); if ((d.n || '').toLowerCase().indexOf(q) < 0 && (d.ph || '').indexOf(q) < 0 && (d.r || '').toLowerCase().indexOf(q) < 0) return false; }
       return true;
     });
@@ -103,6 +103,7 @@
       var p = d.p || 'general'; byP[p] = byP[p] || { s: 0, c: 0 }; byP[p].s += d.a; byP[p].c++;
       var t = typeOf(d); byT[t] = byT[t] || { s: 0, c: 0 }; byT[t].s += d.a; byT[t].c++;
       if (d.g) { byT.gift = byT.gift || { s: 0, c: 0 }; byT.gift.s += d.a; byT.gift.c++; }
+      if (d.w) { byT.waqf = byT.waqf || { s: 0, c: 0 }; byT.waqf.s += d.a; byT.waqf.c++; }
       var m = d.m || ''; byM[m] = byM[m] || { s: 0, c: 0 }; byM[m].s += d.a; byM[m].c++;
     });
     var ph = Object.keys(donors), repeat = ph.filter(function (k) { return donors[k] > 1; }).length, newD = ph.filter(function (k) { return firstEver[k] >= r.from; }).length;
@@ -218,7 +219,7 @@
     if (g != null && F.compare) out.push([g >= 0 ? 'good' : 'bad', (g >= 0 ? 'ارتفع' : 'انخفض') + ' إجمالي التبرعات ' + pct(Math.abs(g)) + ' مقارنة بالفترة السابقة (' + n0(S.sum) + ' مقابل ' + n0(P.sum) + ' ريال).']);
     var ps = Object.keys(S.byP).sort(function (a, b) { return S.byP[b].s - S.byP[a].s; });
     if (ps.length > 1 && !F.project) out.push(['info', 'المشروع الأعلى تبرعًا: «' + (NAMES[ps[0]] || ps[0]) + '» بنسبة ' + pct(S.byP[ps[0]].s / S.sum * 100) + ' من الإجمالي.']);
-    var zero = Object.keys(NAMES).filter(function (k) { return k !== 'general' && !S.byP[k]; });
+    var zero = Object.keys(NAMES).filter(function (k) { return k !== 'general' && LIVE[k] && !S.byP[k]; });
     if (zero.length && !F.project && !F.type) out.push(['warn', 'مشاريع لم تتلقَّ أي تبرع في هذه الفترة: ' + zero.map(function (k) { return '«' + NAMES[k] + '»'; }).join('، ') + '. يمكن إبرازها في الصفحة الرئيسية أو مشاركة روابطها.']);
     Object.keys(GOALS).forEach(function (k) {
       if (!GOALS[k]) return; var tot = (DONS || []).filter(function (d) { return d.s === 'paid' && d.p === k; }).reduce(function (m, d) { return m + d.a; }, 0), p = tot / GOALS[k] * 100;
@@ -231,6 +232,7 @@
     if (S.count >= 10) out.push(['info', 'أفضل وقت للتبرع: يوم ' + DAYS[bd] + '، وأعلى ساعة نحو ' + bh + ':00. أنسب توقيت لنشر الأخبار وحملات التبرع.']);
     if (S.donors) out.push(['info', 'المتبرعون ' + S.donors + '، منهم ' + S.newD + ' جديد' + (S.repeat ? '، و' + S.repeat + ' تبرعوا أكثر من مرة (' + pct(S.repeat / S.donors * 100) + ')' : '') + '.']);
     if (P && P.avg && F.compare) { var a = up(S.avg, P.avg); if (Math.abs(a) >= 10) out.push([a > 0 ? 'good' : 'warn', 'متوسط التبرع ' + (a > 0 ? 'ارتفع' : 'انخفض') + ' إلى ' + n2(S.avg) + ' ريال (' + (a > 0 ? '+' : '−') + pct(Math.abs(a)) + ').']); }
+    var wq = S.byT.waqf; if (wq && S.sum) out.push(['good', 'التبرعات الوقفية بلغت ' + n0(wq.s) + ' ريال (' + pct(wq.s / S.sum * 100) + ' من الإجمالي)، وهي أصل دائم يدعم الاستدامة المالية للجمعية.']);
     var q = S.byT.quick; if (q && S.count >= 5) out.push(['info', 'التبرع السريع يمثل ' + pct(q.c / S.count * 100) + ' من عدد التبرعات و' + pct(q.s / S.sum * 100) + ' من قيمتها.']);
     var act = SUBS.filter(function (s) { return s.s === 'active'; }); if (act.length) out.push(['good', 'التبرعات الشهرية النشطة: ' + act.length + ' متبرعًا بإيراد شهري متوقع ' + n0(act.reduce(function (m, s) { return m + s.a; }, 0)) + ' ريال.']);
     return out;
@@ -258,7 +260,7 @@
       var all = (DONS || []).filter(function (d) { return d.s === 'paid' && (d.p || 'general') === k; }).reduce(function (m, d) { return m + d.a; }, 0);
       return { label: NAMES[k] || k, value: S.byP[k].s, text: n0(S.byP[k].s) + ' ريال', tip: n2(S.byP[k].s) + ' ريال · ' + S.byP[k].c + ' تبرع · ' + pct(S.byP[k].s / S.sum * 100) + ' من الإجمالي', goal: GOALS[k] || 0, goalPct: GOALS[k] ? all / GOALS[k] * 100 : 0 };
     });
-    var trows = ['project', 'general', 'quick', 'monthly', 'gift'].filter(function (k) { return S.byT[k]; }).map(function (k) { return { label: TYPES[k], value: S.byT[k].s, text: n0(S.byT[k].s) + ' ريال', tip: n2(S.byT[k].s) + ' ريال · ' + S.byT[k].c + ' تبرع' }; });
+    var trows = ['project', 'general', 'quick', 'monthly', 'gift', 'waqf'].filter(function (k) { return S.byT[k]; }).map(function (k) { return { label: TYPES[k], value: S.byT[k].s, text: n0(S.byT[k].s) + ' ريال', tip: n2(S.byT[k].s) + ' ريال · ' + S.byT[k].c + ' تبرع' }; });
     var mrows = Object.keys(S.byM).sort(function (x, y) { return S.byM[y].c - S.byM[x].c; }).map(function (k) { return { label: METHOD[k] || k, value: S.byM[k].c, text: S.byM[k].c + ' (' + pct(S.byM[k].c / S.count * 100) + ')', tip: S.byM[k].c + ' تبرع · ' + n2(S.byM[k].s) + ' ريال' }; });
     var top = {}; list.forEach(function (d) { var t = top[d.ph] = top[d.ph] || { n: '', s: 0, c: 0 }; t.s += d.a; t.c++; if (d.n) t.n = d.n; });
     var tops = Object.keys(top).sort(function (x, y) { return top[y].s - top[x].s; }).slice(0, 10);
@@ -286,7 +288,7 @@
     $('#dons-table').innerHTML = rows.length ? '<div class="tscroll"><table class="log dons"><thead><tr><th>رقم السند</th><th>التاريخ</th><th>المبلغ (ريال)</th><th>المشروع</th><th>الداعم</th><th>الجوال</th><th>النوع</th><th>الحالة</th><th class="noprint"></th></tr></thead><tbody>' +
       rows.slice(0, 1000).map(function (d) {
         var st = STATUS[d.s] || [d.s, 'gray'];
-        return '<tr data-id="' + d.id + '"><td dir="ltr">' + esc(d.r || '—') + '</td><td>' + esc(A.fmtTime(d.pa || d.t)) + '</td><td>' + n2(d.a) + '</td><td>' + esc(NAMES[d.p] || d.p) + '</td><td>' + esc(d.n || 'فاعل خير') + '</td><td dir="ltr">' + esc(d.ph) + '</td><td>' + TYPES[typeOf(d)] + (d.g ? ' · إهداء' : '') + '</td><td><span class="badge ' + st[1] + '">' + st[0] + '</span></td>' +
+        return '<tr data-id="' + d.id + '"><td dir="ltr">' + esc(d.r || '—') + '</td><td>' + esc(A.fmtTime(d.pa || d.t)) + '</td><td>' + n2(d.a) + '</td><td>' + esc(NAMES[d.p] || d.p) + '</td><td>' + esc(d.n || 'فاعل خير') + '</td><td dir="ltr">' + esc(d.ph) + '</td><td>' + TYPES[typeOf(d)] + (d.w ? ' · وقفي' : '') + (d.g ? ' · إهداء' : '') + '</td><td><span class="badge ' + st[1] + '">' + st[0] + '</span></td>' +
           '<td class="noprint acts2">' + (d.s === 'paid' ? '<button data-a="rcpt">السند</button>' : '') + (d.s === 'initiated' ? '<button data-a="verify">تحقق</button>' : '') + '</td></tr>';
       }).join('') + '</tbody></table></div>' + (rows.length > 1000 ? '<p class="muted small">يُعرض أول 1000 سجل، والتصدير يشمل الكل.</p>' : '') : '<p class="muted">لا توجد تبرعات بهذه التصفية.</p>';
     var SST = { active: ['نشط', 'green'], pending: ['بانتظار الدفع', 'gray'], paused: ['متوقف (تعذر الخصم)', 'amber'], canceled: ['ملغى', 'gray'], failed: ['فشل', 'red'], refused: ['مرفوض', 'red'], single: ['دفعة واحدة', 'gray'] };
@@ -311,7 +313,7 @@
       var X = window.XLSX, r = range(F.range), rows = reportRows(), list = pick(r), S = stats(list, r), wb = X.utils.book_new();
       var head = [['جمعية تيسير النسك – تقرير التبرعات'], [label(r)], ['تاريخ الإصدار: ' + A.fmtTime(new Date().toISOString())], []];
       var t1 = head.concat([['رقم السند', 'التاريخ', 'المبلغ (ريال)', 'المشروع', 'الداعم', 'الجوال', 'النوع', 'إهداء', 'وسيلة الدفع', 'الحالة']]).concat(rows.map(function (d) {
-        return [d.r || '', (d.pa || d.t || '').replace('T', ' ').slice(0, 16), d.a, NAMES[d.p] || d.p, d.n || 'فاعل خير', d.ph, TYPES[typeOf(d)], d.g ? 'نعم' : '', METHOD[d.m || ''] || d.m, (STATUS[d.s] || [d.s])[0]];
+        return [d.r || '', (d.pa || d.t || '').replace('T', ' ').slice(0, 16), d.a, NAMES[d.p] || d.p, d.n || 'فاعل خير', d.ph, TYPES[typeOf(d)] + (d.w ? ' (وقفي)' : ''), d.g ? 'نعم' : '', METHOD[d.m || ''] || d.m, (STATUS[d.s] || [d.s])[0]];
       }));
       t1.push([]); t1.push(['الإجمالي المكتمل', '', rows.reduce(function (m, d) { return m + (d.s === 'paid' ? d.a : 0); }, 0)]);
       var s1 = X.utils.aoa_to_sheet(t1); s1['!cols'] = [{ wch: 18 }, { wch: 18 }, { wch: 14 }, { wch: 34 }, { wch: 24 }, { wch: 14 }, { wch: 14 }, { wch: 8 }, { wch: 14 }, { wch: 16 }];

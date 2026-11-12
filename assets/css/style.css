@@ -650,3 +650,14 @@ body:not(.store-on) .quick{opacity:.6;pointer-events:none}
 @media (max-width:1600px) and (min-width:1381px){html[lang=en] .hsearch{width:150px}html[lang=en] header.site .wrap{gap:12px}}
 @media (max-width:460px){header.site .wrap{gap:5px}.brand img{height:38px}}
 @media (max-width:340px){.brand img{height:32px}.langs summary{padding:5px}}
+/* التبرع السريع (زر فقط) والمشروع الوقفي */
+.qbar{display:flex;justify-content:center;margin:0 0 30px}
+.btn-quick{font-size:20px;padding:15px 40px;box-shadow:0 10px 26px rgba(196,154,69,.45)}
+body:not(.store-on) .btn-quick{opacity:.45;pointer-events:none}
+.dcard .dimg{position:relative}
+.dtag{position:absolute;top:12px;inset-inline-start:12px;background:var(--gold);color:#fff;border-radius:999px;padding:2px 14px;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+.dcard.waqf{border-color:#E4CF9F}
+.dcard.waqf .dimg{background-color:var(--g)}
+.dcard.closed .dimg{filter:grayscale(.6)}
+.dshut{display:inline-block;background:var(--cream);color:var(--sage);border-radius:999px;padding:8px 18px;font-size:15px}
+.ddlg [hidden]{display:none!important}

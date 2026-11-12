@@ -164,3 +164,25 @@ table.dons td,table.dons th{white-space:nowrap}
  table.dons td,table.dons th{white-space:normal;font-size:10pt;padding:5px 6px}
  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+/* مراحل المشروع واعتماده */
+.badge.gold{background:#B9822A}
+.flow{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:0 0 10px;counter-reset:f}
+.flow li{counter-increment:f;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 14px 4px 10px;font-size:14px;color:var(--g)}
+.flow li::before{content:counter(f);display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--g);color:#fff;font-size:12px;margin-inline-end:6px}
+.fchips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.fchips button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 14px;font:inherit;font-size:14px;cursor:pointer;color:var(--g)}
+.fchips button.on{background:var(--g);color:#fff;border-color:var(--g)}
+.fchips small{opacity:.75}
+.rnote{display:block;width:100%;color:#8A5A12;background:#FBF3E2;border-radius:8px;padding:4px 10px;margin-top:4px;font-size:13.5px}
+.pr-sum{display:flex;gap:16px;align-items:flex-start}
+.pr-sum .th{flex:none;width:120px;height:84px;border-radius:12px;background:var(--cream) center/cover}
+.pr-sum h3{margin:0 0 4px}.pr-sum p{margin:0 0 6px;color:#4a5654}
+.pr-sum .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13.5px;color:var(--sage)}
+.seg{display:flex;flex-wrap:wrap;gap:6px;background:var(--cream);border-radius:14px;padding:5px;margin:0 0 14px}
+.seg[hidden]{display:none}
+.seg label{flex:1;min-width:140px;margin:0;text-align:center;border-radius:10px;padding:8px 10px;cursor:pointer}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label.on{background:var(--g);color:#fff}
+.pr-store{border:1px solid #E4CF9F;background:#FFFCF4;border-radius:14px;padding:12px 16px 4px;margin:0 0 14px}
+.pr-store legend{padding:0 8px;color:#8A5A12}
+@media (max-width:640px){.pr-sum{flex-direction:column}.pr-sum .th{width:100%;height:140px}}

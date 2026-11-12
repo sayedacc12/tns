@@ -52,7 +52,7 @@
  <section id="v-app" hidden>
   <nav class="adm-tabs" id="tabs">
    <button type="button" data-tab="news" class="on">الأخبار <span class="cnt" id="pending-cnt" hidden></span></button>
-   <button type="button" data-tab="projects">المشاريع والبرامج</button>
+   <button type="button" data-tab="projects">المشاريع والبرامج <span class="cnt" id="proj-pending-cnt" hidden></span></button>
    <button type="button" data-tab="dash" data-admin>لوحة المتجر</button>
    <button type="button" data-tab="dons" data-admin>التبرعات</button>
    <button type="button" data-tab="users" data-admin>المستخدمون والصلاحيات</button>
@@ -101,8 +101,10 @@
 
   <!-- المشاريع -->
   <div class="pane" id="p-projects" hidden>
-   <div class="bar"><h2>المشاريع والبرامج</h2><button class="btn btn-gold" type="button" id="proj-add" data-admin>+ إضافة مشروع</button></div>
-   <p class="muted hint">تظهر المشاريع المعروضة في صفحة «البرامج» وفي تذييل الموقع بالترتيب نفسه. استخدم الأسهم لتغيير الترتيب.</p>
+   <div class="bar"><h2>المشاريع والبرامج</h2><button class="btn btn-gold" type="button" id="proj-add">+ إضافة مشروع</button></div>
+   <ol class="flow" aria-label="مراحل المشروع"><li>إعداد المشروع</li><li>إرساله للاعتماد</li><li>اعتماد المدير وتحديد النشر في المتجر</li><li>استكمال بيانات المتجر</li><li>الظهور في الموقع والمتجر</li></ol>
+   <p class="muted hint" id="proj-hint"></p>
+   <div class="fchips" id="proj-filter"></div>
    <div class="list" id="proj-list"></div>
   </div>
 
@@ -144,13 +146,54 @@
      <label>نقاط مميزة (نقطة في كل سطر)<textarea data-ml="points" rows="4" maxlength="2000"></textarea></label>
      <label>وسوم (مفصولة بمسافة)<input data-ml="tags" maxlength="300"></label>
     </div>
-    <h3>التبرعات</h3>
-    <div class="grid2">
-     <label class="chk"><input type="checkbox" name="donate" checked> يستقبل تبرعات في صفحة التبرع</label>
-     <label>المستهدف المالي (ريال، اختياري)<input name="goal" type="number" min="0" step="1" dir="ltr" placeholder="مثال: 50000"></label>
+    <p class="muted hint" id="pe-note">يُحفظ المشروع ثم يُرسل للاعتماد. يحدد المدير عند الاعتماد هل يُنشر في المتجر، ويستكمل بياناته: المستهدف وحدود التبرع.</p>
+    <div class="row">
+     <button class="btn btn-green" type="submit" value="pending" id="pe-send">حفظ وإرسال للاعتماد</button>
+     <button class="btn btn-outline" type="submit" value="draft" id="pe-draft">حفظ كمسودة</button>
     </div>
-    <label class="chk"><input type="checkbox" name="published" checked> معروض في الموقع</label>
-    <div class="row"><button class="btn btn-green" type="submit">حفظ المشروع</button></div>
+   </form>
+  </div>
+
+  <!-- اعتماد المشروع وبيانات المتجر -->
+  <div class="pane" id="p-proj-review" hidden>
+   <div class="bar"><h2 id="pr-title">اعتماد مشروع</h2><button class="btn btn-outline" type="button" data-back="projects">رجوع</button></div>
+   <div class="adm-card pr-sum" id="pr-sum"></div>
+   <form id="f-review" class="adm-card" novalidate>
+    <h3>القرار</h3>
+    <div class="seg" id="pr-dec">
+     <label><input type="radio" name="decision" value="approve" checked> اعتماد</label>
+     <label><input type="radio" name="decision" value="return"> إرجاع للتعديل</label>
+     <label><input type="radio" name="decision" value="reject"> رفض</label>
+    </div>
+    <div data-when="approve">
+     <label class="chk"><input type="checkbox" name="published" checked> عرض المشروع في صفحة البرامج بالموقع</label>
+     <h3>النشر في المتجر</h3>
+     <div class="seg" id="pr-store">
+      <label><input type="radio" name="on" value="1"> نعم، يُنشر في المتجر</label>
+      <label><input type="radio" name="on" value="0" checked> لا يُنشر في المتجر</label>
+     </div>
+     <fieldset class="pr-store" data-store hidden>
+      <legend>بيانات المتجر المطلوبة</legend>
+      <div class="grid3">
+       <label>نوع التبرع<select name="kind"><option value="project">تبرع لمشروع</option><option value="waqf">تبرع وقفي (يُحفظ أصله ويُصرف ريعه)</option></select></label>
+       <label>المستهدف المالي (ريال) *<input name="goal" type="number" min="1" step="1" dir="ltr" placeholder="مثال: 50000"></label>
+       <label>تاريخ انتهاء الحملة (اختياري)<input name="end" type="date" dir="ltr"></label>
+      </div>
+      <div class="grid3">
+       <label>الحد الأدنى للتبرع (ريال) *<input name="min" type="number" min="1" step="1" dir="ltr"></label>
+       <label>الحد الأعلى للتبرع الواحد (اختياري)<input name="max" type="number" min="0" step="1" dir="ltr" placeholder="100000"></label>
+       <label>المبالغ السريعة (مفصولة بفاصلة)<input name="presets" dir="ltr" placeholder="50, 100, 200, 500"></label>
+      </div>
+      <p class="muted small" id="pr-minnote"></p>
+      <div class="grid3">
+       <label class="chk"><input type="checkbox" name="stop"> إيقاف التبرع عند بلوغ المستهدف</label>
+       <label class="chk"><input type="checkbox" name="monthly" checked> السماح بالتبرع الشهري</label>
+       <label class="chk"><input type="checkbox" name="gift" checked> السماح بالتبرع الإهدائي</label>
+      </div>
+     </fieldset>
+    </div>
+    <label>ملاحظات القرار<span data-when="note"> (مطلوبة عند الإرجاع أو الرفض)</span><textarea name="note" rows="3" maxlength="500"></textarea></label>
+    <div class="row"><button class="btn btn-green" type="submit" id="pr-go">تأكيد القرار</button></div>
    </form>
   </div>
 

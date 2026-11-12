@@ -29,28 +29,14 @@
 <section class="store">
  <div class="wrap">
   <div class="store-note" id="store-closed"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A5A12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><b>يُفتح باب التبرع الإلكتروني بعد صدور ترخيص الجمعية.</b><br>تابع أخبار الجمعية ليصلك الإعلان، ولأي استفسار تواصل مع المدير التنفيذي على <a href="tel:+966546684628" dir="ltr">0546684628</a>.</div></div>
-  <div class="store-top">
-   <div class="store-stats">
-    <div><span>إجمالي التبرعات</span><b><bdi id="st-sum">0</bdi> <small>ريال</small></b></div>
-    <div><span>عدد التبرعات</span><b id="st-cnt">0</b></div>
-   </div>
-   <form class="quick" id="quick" novalidate>
-    <h3><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg> تبرع سريع</h3>
-    <p>مبلغ ورقم جوال فقط، ويُقيد تبرعًا عامًا.</p>
-    <div class="chips"></div>
-    <div class="qrow">
-     <label>المبلغ (ريال)<input name="amount" type="number" inputmode="decimal" min="20" step="1" required placeholder="20"></label>
-     <label>رقم الجوال<input name="phone" type="tel" inputmode="tel" dir="ltr" maxlength="16" placeholder="05xxxxxxxx" required></label>
-     <button class="btn btn-gold" type="submit">تبرّع الآن</button>
-    </div>
-    <div class="ferr" role="alert"></div>
-   </form>
+  <div class="qbar">
+   <button class="btn btn-gold btn-quick" type="button" data-give="quick"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg> تبرّع سريع</button>
   </div>
 
   <h2 class="store-h">اختر المشروع</h2>
   <div class="dgrid" id="store-list">
    <article class="dcard general" data-p="general"><div class="dimg"><svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg></div>
-    <div class="db"><h3>تبرع عام غير مقيد</h3><p>يُصرف في أوجه عمل الجمعية وبرامجها حسب الأولوية والاحتياج.</p><div class="dmeter"><b data-sum>0</b> ريال · <span data-cnt>0</span> تبرع</div>
+    <div class="db"><h3>تبرع عام غير مقيد</h3><p>يُصرف في أوجه عمل الجمعية وبرامجها حسب الأولوية والاحتياج.</p>
     <div class="dacts"><button class="btn btn-gold" type="button" data-give="general">تبرّع الآن</button></div></div></article>
    <article class="dcard" data-p="umrah"><div class="dimg" style="background-image:url(assets/img/scenes/haram.svg)"></div><div class="db"><h3>برنامج العمرة</h3><p>رحلات عمرة منظمة على مدار العام، تشمل التصاريح والنقل والسكن والإعاشة والمرافقة.</p><div class="dmeter"><b data-sum>0</b> ريال · <span data-cnt>0</span> تبرع</div><div class="dacts"><button class="btn btn-gold" type="button" data-give="umrah">تبرّع للمشروع</button><button class="dlink" type="button" data-copy="umrah" title="نسخ رابط التبرع لهذا المشروع"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D4842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg> نسخ الرابط</button></div></div></article><article class="dcard" data-p="wafa"><div class="dimg" style="background-image:url(assets/img/scenes/arafat.svg)"></div><div class="db"><h3>مبادرة «حجّة الوفاء»</h3><p>كفالة حج تكريمية لفئات مستحقة من أبناء الوطن، مثل ذوي الشهداء ومنسوبي الدفاع المدني والحرس الوطني.</p><div class="dmeter"><b data-sum>0</b> ريال · <span data-cnt>0</span> تبرع</div><div class="dacts"><button class="btn btn-gold" type="button" data-give="wafa">تبرّع للمشروع</button><button class="dlink" type="button" data-copy="wafa" title="نسخ رابط التبرع لهذا المشروع"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D4842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg> نسخ الرابط</button></div></div></article><article class="dcard" data-p="hajj"><div class="dimg" style="background-image:url(assets/img/scenes/mina.svg)"></div><div class="db"><h3>برنامج الحج</h3><p>كفالة حج الفريضة لغير القادرين ممن لم يحجوا، عبر باقات حجاج الداخل لدى شركات مرخصة مع الرعاية والمتابعة.</p><div class="dmeter"><b data-sum>0</b> ريال · <span data-cnt>0</span> تبرع</div><div class="dacts"><button class="btn btn-gold" type="button" data-give="hajj">تبرّع للمشروع</button><button class="dlink" type="button" data-copy="hajj" title="نسخ رابط التبرع لهذا المشروع"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D4842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg> نسخ الرابط</button></div></div></article><article class="dcard" data-p="awareness"><div class="dimg" style="background-image:url(assets/img/scenes/nabawi.svg)"></div><div class="db"><h3>برنامج التوعية والتأهيل</h3><p>إرشاد المستفيدين في أحكام النسك والسلامة والصحة قبل الرحلة وأثناءها.</p><div class="dmeter"><b data-sum>0</b> ريال · <span data-cnt>0</span> تبرع</div><div class="dacts"><button class="btn btn-gold" type="button" data-give="awareness">تبرّع للمشروع</button><button class="dlink" type="button" data-copy="awareness" title="نسخ رابط التبرع لهذا المشروع"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D4842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg> نسخ الرابط</button></div></div></article><article class="dcard" data-p="academy"><div class="dimg" style="background-image:url(assets/img/scenes/path.svg)"></div><div class="db"><h3>«أكاديمية تيسير لتأهيل المتطوعين»</h3><p>تدريب الكوادر التطوعية والعاملة من الجنسين وتأهيلها للعمل في أنشطة الحج والعمرة بحقائب معتمدة.</p><div class="dmeter"><b data-sum>0</b> ريال · <span data-cnt>0</span> تبرع</div><div class="dacts"><button class="btn btn-gold" type="button" data-give="academy">تبرّع للمشروع</button><button class="dlink" type="button" data-copy="academy" title="نسخ رابط التبرع لهذا المشروع"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D4842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg> نسخ الرابط</button></div></div></article><article class="dcard" data-p="observatory"><div class="dimg" style="background-image:url(assets/img/scenes/skyline.svg)"></div><div class="db"><h3>«مرصد تيسير للدراسات»</h3><p>بحوث ودراسات وخبرات استشارية داعمة لأنشطة الحج والعمرة في المملكة، تمكّن مقدمي الخدمات.</p><div class="dmeter"><b data-sum>0</b> ريال · <span data-cnt>0</span> تبرع</div><div class="dacts"><button class="btn btn-gold" type="button" data-give="observatory">تبرّع للمشروع</button><button class="dlink" type="button" data-copy="observatory" title="نسخ رابط التبرع لهذا المشروع"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D4842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg> نسخ الرابط</button></div></div></article>
   </div>
@@ -66,7 +52,7 @@
 <dialog class="ddlg" id="ddlg">
  <form id="dform" novalidate>
   <button class="dx" type="button" aria-label="إغلاق">×</button>
-  <div class="kick">التبرع لـ</div>
+  <div class="kick" id="d-kick">التبرع لـ</div>
   <h3 id="d-title">تبرع عام غير مقيد</h3>
   <input type="hidden" name="project">
   <div id="d-fields">

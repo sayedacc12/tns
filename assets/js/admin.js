@@ -18,7 +18,9 @@
     self: 'لا يمكن حذف حسابك أو آخر مدير، ولا إلغاء صلاحيته أو تعطيله.', title: 'عنوان الخبر بالعربية مطلوب.', name: 'اسم المشروع بالعربية مطلوب.',
     size: 'حجم الصورة كبير جدًا.', type: 'نوع الصورة غير مدعوم (JPG أو PNG أو WEBP).', image: 'تعذّرت قراءة الصورة.', not_found: 'العنصر غير موجود، ربما حُذف.',
     origin: 'هذا الموقع غير مسموح له بالاتصال بالمنصة (راجع ALLOWED_ORIGINS في إعدادات الوسيط).', no_db: 'المنصة غير مفعّلة بعد: أضف قاعدة بيانات KV باسم DB في إعدادات الوسيط.',
-    network: 'تعذّر الاتصال بالمنصة. تحقق من الإنترنت ومن رابط الوسيط.', server: 'حدث خطأ في الخادم.'
+    network: 'تعذّر الاتصال بالمنصة. تحقق من الإنترنت ومن رابط الوسيط.', server: 'حدث خطأ في الخادم.',
+    decision: 'اختر القرار.', note: 'اكتب سبب الإرجاع أو الرفض في الملاحظات.', goal: 'المستهدف المالي مطلوب عند النشر في المتجر.',
+    min: 'الحد الأدنى للمشروع لا يقل عن الحد الأدنى العام في الإعدادات.', max: 'الحد الأعلى يجب أن يكون أكبر من الحد الأدنى.', not_approved: 'المشروع غير معتمد بعد.'
   };
 
   // ---------- أدوات ----------
@@ -55,7 +57,7 @@
   }
   function pane(p) {
     $$('.pane').forEach(function (x) { x.hidden = x.id !== 'p-' + p; });
-    var tab = { 'news-edit': 'news', 'proj-edit': 'projects' }[p] || p;
+    var tab = { 'news-edit': 'news', 'proj-edit': 'projects', 'proj-review': 'projects' }[p] || p;
     $$('#tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === tab); });
     window.scrollTo(0, 0);
   }
@@ -252,19 +254,40 @@
   $('#svc-rows').addEventListener('click', function (e) { if (!e.target.closest('[data-del]')) return; SVC.splice(+e.target.closest('.svc-row').dataset.i, 1); renderSvc(); });
   $('#svc-add').addEventListener('click', function () { SVC.push({ icon: 'check', title: {}, text: {} }); renderSvc(); });
 
+  var num = function (n) { return Number(n || 0).toLocaleString('en-US'); };
+  var PST = { approved: ['معتمد', 'green'], pending: ['بانتظار الاعتماد', 'amber'], draft: ['مسودة', 'gray'], rejected: ['مرفوض', 'red'] }, PF = '';
   function loadProjects() { return call('GET', '/api/admin/projects').then(function (r) { PROJ = r.projects; renderProjects(); }).catch(function () {}); }
+  function canEdit(p) { return isAdmin() || (p.createdBy === me.username && p.status !== 'approved'); }
   function renderProjects() {
-    $('#proj-list').innerHTML = PROJ.length ? PROJ.map(function (p, i) {
-      var acts = isAdmin() ? '<button data-a="edit">تعديل</button><button data-a="toggle">' + (p.published ? 'إخفاء' : 'إظهار') + '</button><button class="danger" data-a="del">حذف</button>' : '<span class="muted small">عرض فقط</span>';
+    var pend = PROJ.filter(function (p) { return p.status === 'pending'; }).length;
+    var c = $('#proj-pending-cnt'); c.hidden = !(isAdmin() && pend); c.textContent = pend;
+    $('#proj-hint').textContent = isAdmin() ? 'بصفتك مديرًا: تعتمد المشاريع أو ترجعها أو ترفضها، وتحدد عند الاعتماد هل يُنشر المشروع في المتجر وتستكمل بياناته. ترتيب المشاريع المعتمدة هو ترتيب ظهورها في الموقع.' :
+      'بصفتك محررًا: تضيف المشاريع وترسلها للاعتماد، ولا تظهر في الموقع حتى يعتمدها مدير. تعديل مشروعك قبل اعتماده يعيده للاعتماد.';
+    var F = [['', 'الكل'], ['pending', 'بانتظار الاعتماد'], ['approved', 'معتمد'], ['draft', 'مسودة'], ['rejected', 'مرفوض']];
+    $('#proj-filter').innerHTML = F.map(function (f) { var n = f[0] ? PROJ.filter(function (p) { return p.status === f[0]; }).length : PROJ.length;
+      return '<button type="button" data-f="' + f[0] + '" class="' + (PF === f[0] ? 'on' : '') + '">' + f[1] + ' <small>' + n + '</small></button>'; }).join('');
+    var list = PROJ.filter(function (p) { return !PF || p.status === PF; });
+    $('#proj-list').innerHTML = list.length ? list.map(function (p) {
+      var i = PROJ.indexOf(p), st = PST[p.status] || PST.approved, s = p.store || {}, acts = '';
+      if (isAdmin() && p.status !== 'approved') acts += '<button class="go" data-a="review">مراجعة واعتماد</button>';
+      if (isAdmin() && p.status === 'approved') acts += '<button data-a="review">بيانات المتجر</button><button data-a="toggle">' + (p.published ? 'إخفاء' : 'إظهار') + '</button>';
+      if (canEdit(p)) acts += '<button data-a="edit">تعديل</button><button class="danger" data-a="del">حذف</button>';
+      if (!acts) acts = '<span class="muted small">عرض فقط</span>';
+      var meta = '<span class="badge ' + st[1] + '">' + st[0] + '</span>';
+      if (p.status === 'approved') meta += '<span class="badge ' + (p.published ? 'green' : 'gray') + '">' + (p.published ? 'معروض' : 'مخفي') + '</span>';
+      if (p.status === 'approved' && s.on) meta += '<span class="badge gold">' + (s.kind === 'waqf' ? 'في المتجر · وقفي' : 'في المتجر') + '</span><span>' + (s.goal ? 'المستهدف ' + num(s.goal) + ' ريال' : 'دون مستهدف') + ' · ' + (s.min ? 'الحد الأدنى ' + num(s.min) + ' ريال' : 'الحد الأدنى العام') + '</span>';
+      else if (p.status === 'approved') meta += '<span class="badge gray">خارج المتجر</span>';
+      if (p.review && p.review.note && p.status !== 'approved') meta += '<span class="rnote">ملاحظة المدير: ' + esc(p.review.note) + '</span>';
       return '<div class="item" data-id="' + esc(p.id) + '"><div class="th" style="background-image:url(\'' + esc(thumb(p)) + '\')"></div><div><h4>' + icon(p.icon, 20) + ' ' + esc(p.name.ar) + '</h4>' +
-        '<div class="meta"><span class="badge ' + (p.published ? 'green' : 'gray') + '">' + (p.published ? 'معروض' : 'مخفي') + '</span><span>' + esc(p.tag.ar) + '</span><span dir="ltr">#' + esc(p.id) + '</span></div></div>' +
-        '<div class="acts">' + (isAdmin() ? '<span class="ord"><button data-a="up" title="أعلى" ' + (i ? '' : 'disabled') + '>▲</button><button data-a="down" title="أسفل" ' + (i < PROJ.length - 1 ? '' : 'disabled') + '>▼</button></span>' : '') + acts + '</div></div>';
-    }).join('') : '<p class="muted">لا توجد مشاريع.</p>';
+        '<div class="meta">' + meta + '<span dir="ltr">#' + esc(p.id) + '</span>' + (p.createdBy && p.createdBy !== 'system' ? '<span>· أعدّه ' + esc(p.createdBy) + '</span>' : '') + '</div></div>' +
+        '<div class="acts">' + (isAdmin() && !PF ? '<span class="ord"><button data-a="up" title="أعلى" ' + (i ? '' : 'disabled') + '>▲</button><button data-a="down" title="أسفل" ' + (i < PROJ.length - 1 ? '' : 'disabled') + '>▼</button></span>' : '') + acts + '</div></div>';
+    }).join('') : '<p class="muted">لا توجد مشاريع في هذا التصنيف.</p>';
   }
+  $('#proj-filter').addEventListener('click', function (e) { var b = e.target.closest('[data-f]'); if (!b) return; PF = b.dataset.f; renderProjects(); });
   function projPayload(p, over) {
     var d = p || {};
     return Object.assign({ name: d.name, tag: d.tag, summary: d.summary, about: d.about, audience: d.audience, when: d.when, slogan: d.slogan, points: d.points, tags: d.tags,
-      icon: d.icon, scene: d.scene, image: d.image, kit: d.kit, services: d.services, published: d.published, donate: d.donate !== false, goal: d.goal || 0 }, over || {});
+      icon: d.icon, scene: d.scene, image: d.image, kit: d.kit, services: d.services }, over || {});
   }
   function openProj(p) {
     pEdit = p || null;
@@ -277,8 +300,10 @@
     var kit = p ? p.kit : '';
     fP.kitsel.value = !kit ? '' : kits.indexOf(kit) >= 0 ? kit : 'url'; fP.kiturl.value = fP.kitsel.value === 'url' ? kit : '';
     $('[data-kiturl]').hidden = fP.kitsel.value !== 'url';
-    fP.published.checked = p ? p.published : true;
-    fP.donate.checked = p ? p.donate !== false : true; fP.goal.value = p && p.goal ? p.goal : '';
+    var appr = isAdmin() && p && p.status === 'approved';
+    $('#pe-send').textContent = appr ? 'حفظ التعديلات' : 'حفظ وإرسال للاعتماد'; $('#pe-draft').hidden = appr;
+    $('#pe-note').textContent = appr ? 'المشروع معتمد، وتُحفظ تعديلاته مباشرة. لتغيير بيانات المتجر استخدم زر «بيانات المتجر» في القائمة.' :
+      'يُحفظ المشروع ثم يُرسل للاعتماد. يحدد المدير عند الاعتماد هل يُنشر في المتجر، ويستكمل بياناته: المستهدف وحدود التبرع.';
     SVC = p ? JSON.parse(JSON.stringify(p.services || [])) : [];
     pImg.set(p ? p.image : ''); renderSvc();
     pane('proj-edit');
@@ -286,13 +311,67 @@
   $('#proj-add').addEventListener('click', function () { openProj(null); });
   fP.addEventListener('submit', function (e) {
     e.preventDefault();
-    var d = pML.get();
+    var d = pML.get(), st = e.submitter && e.submitter.value === 'draft' ? 'draft' : 'pending';
     if (!d.name || !d.name.ar) { say(ERR.name, true); return; }
-    var body = projPayload(Object.assign({}, d, { icon: fP.icon.value, scene: fP.scene.value, image: pImg.id, published: fP.published.checked, donate: fP.donate.checked, goal: Math.max(0, Math.round(Number(fP.goal.value) || 0)),
+    var body = projPayload(Object.assign({}, d, { icon: fP.icon.value, scene: fP.scene.value, image: pImg.id, status: st,
       kit: fP.kitsel.value === 'url' ? fP.kiturl.value.trim() : fP.kitsel.value, services: SVC.filter(function (s) { return s.title && s.title.ar; }) }));
     if (!pEdit) body.id = fP.id.value.trim();
-    (pEdit ? call('PUT', '/api/admin/projects/' + pEdit.id, body) : call('POST', '/api/admin/projects', body)).then(function () {
-      say('حُفظ المشروع.'); pane('projects'); loadProjects();
+    (pEdit ? call('PUT', '/api/admin/projects/' + pEdit.id, body) : call('POST', '/api/admin/projects', body)).then(function (r) {
+      var s2 = r.item && r.item.status;
+      say(s2 === 'approved' ? 'حُفظت تعديلات المشروع.' : s2 === 'pending' ? 'حُفظ المشروع وأُرسل للاعتماد.' : 'حُفظ المشروع كمسودة.'); pane('projects'); loadProjects();
+    }).catch(function () {});
+  });
+
+  // ---------- اعتماد المشروع وبيانات المتجر ----------
+  var fR = $('#f-review'), rEdit = null, GMIN = 20;
+  function decSync() {
+    var dec = fR.decision.value, on = fR.on.value === '1';
+    $$('[data-when=approve]', fR).forEach(function (x) { x.hidden = dec !== 'approve'; });
+    $('[data-when=note]', fR).hidden = dec === 'approve';
+    $('[data-store]', fR).hidden = !on;
+    $('#pr-go').textContent = dec === 'approve' ? (rEdit && rEdit.status === 'approved' ? 'حفظ' : 'اعتماد المشروع') : dec === 'return' ? 'إرجاع للتعديل' : 'رفض المشروع';
+    $$('#pr-dec label, #pr-store label').forEach(function (l) { l.classList.toggle('on', l.querySelector('input').checked); });
+  }
+  fR.addEventListener('change', decSync);
+  function openReview(p) {
+    rEdit = p; fR.reset();
+    var s = p.store || {}, appr = p.status === 'approved';
+    $('#pr-title').textContent = appr ? 'بيانات المتجر: ' + p.name.ar : 'اعتماد مشروع: ' + p.name.ar;
+    $('#pr-dec').hidden = appr;
+    $('#pr-sum').innerHTML = '<div class="th" style="background-image:url(\'' + esc(thumb(p)) + '\')"></div><div><h3>' + icon(p.icon, 22) + ' ' + esc(p.name.ar) + '</h3><p>' + esc(p.summary.ar || p.tag.ar || '') + '</p>' +
+      '<div class="meta"><span class="badge ' + (PST[p.status] || PST.approved)[1] + '">' + (PST[p.status] || PST.approved)[0] + '</span>' +
+      (p.createdBy ? '<span>أعدّه: ' + esc(p.createdBy) + '</span>' : '') + (p.updatedAt ? '<span>آخر تعديل: ' + esc(fmtTime(p.updatedAt)) + '</span>' : '') +
+      (p.kit ? '<a href="' + esc(/^https:/.test(p.kit) ? p.kit : p.kit) + '" target="_blank" rel="noopener">الحقيبة التعريفية</a>' : '') + '</div>' +
+      (p.review && p.review.note ? '<p class="rnote">آخر ملاحظة: ' + esc(p.review.note) + '</p>' : '') + '</div>';
+    fR.published.checked = appr ? p.published !== false : true;
+    fR.on.value = s.on && (appr || s.goal) ? '1' : '0';
+    fR.kind.value = s.kind || 'project'; fR.goal.value = s.goal || ''; fR.end.value = s.end || '';
+    fR.max.value = s.max || ''; fR.presets.value = (s.presets || []).join(', ');
+    fR.stop.checked = !!s.stop; fR.monthly.checked = s.monthly !== false; fR.gift.checked = s.gift !== false;
+    call('GET', '/api/admin/settings').then(function (r) {
+      GMIN = (r.settings && r.settings.donations && r.settings.donations.min) || r.donations && r.donations.min || 20;
+    }).catch(function () {}).then(function () {
+      fR.min.min = GMIN; fR.min.value = s.min || GMIN;
+      $('#pr-minnote').textContent = 'الحد الأدنى العام في الإعدادات ' + num(GMIN) + ' ريال، ولا يقل حد المشروع عنه. اترك المبالغ السريعة فارغة لاستخدام المبالغ العامة.';
+    });
+    decSync(); pane('proj-review');
+  }
+  fR.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var dec = fR.decision.value, on = fR.on.value === '1';
+    var body = { decision: dec, note: fR.note.value.trim(), published: fR.published.checked,
+      store: { on: on, kind: fR.kind.value, goal: Number(fR.goal.value) || 0, min: Number(fR.min.value) || 0, max: Number(fR.max.value) || 0, end: fR.end.value,
+        presets: fR.presets.value.split(/[,،\s]+/).map(Number).filter(function (v) { return v > 0; }), stop: fR.stop.checked, monthly: fR.monthly.checked, gift: fR.gift.checked } };
+    if (dec !== 'approve' && !body.note) return say(ERR.note, true);
+    if (dec === 'approve' && on) {
+      if (!(body.store.goal > 0)) { fR.goal.focus(); return say(ERR.goal, true); }
+      if (body.store.min < GMIN) { fR.min.focus(); return say(ERR.min, true); }
+      if (body.store.max && body.store.max < body.store.min) { fR.max.focus(); return say(ERR.max, true); }
+    }
+    call('POST', '/api/admin/projects/' + rEdit.id + '/review', body).then(function (r) {
+      var it = r.item;
+      say(dec === 'approve' ? (rEdit.status === 'approved' ? 'حُفظت بيانات المتجر.' : 'اعتُمد المشروع' + (it.store.on ? ' ونُشر في المتجر.' : '، ولن يظهر في المتجر.')) : dec === 'return' ? 'أُرجع المشروع لمُعدّه للتعديل.' : 'رُفض المشروع.');
+      pane('projects'); loadProjects();
     }).catch(function () {});
   });
   $('#proj-list').addEventListener('click', function (e) {
@@ -301,7 +380,8 @@
     var a = b.dataset.a;
     if (a === 'edit') return openProj(p);
     if (a === 'del') { if (!confirm('حذف المشروع «' + p.name.ar + '» نهائيًا من الموقع؟')) return; return call('DELETE', '/api/admin/projects/' + id).then(function () { say('حُذف المشروع.'); loadProjects(); }).catch(function () {}); }
-    if (a === 'toggle') return call('PUT', '/api/admin/projects/' + id, projPayload(p, { published: !p.published })).then(function () { say(p.published ? 'أُخفي المشروع من الموقع.' : 'أصبح المشروع معروضًا.'); loadProjects(); }).catch(function () {});
+    if (a === 'review') return openReview(p);
+    if (a === 'toggle') return call('POST', '/api/admin/projects/' + id + '/visibility', { published: !p.published }).then(function () { say(p.published ? 'أُخفي المشروع من الموقع.' : 'أصبح المشروع معروضًا.'); loadProjects(); }).catch(function () {});
     if (a === 'up' || a === 'down') {
       var j = a === 'up' ? i - 1 : i + 1; if (j < 0 || j >= PROJ.length) return;
       var ids = PROJ.map(function (x) { return x.id; }); ids[i] = PROJ[j].id; ids[j] = id;
