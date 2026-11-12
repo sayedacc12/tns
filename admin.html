@@ -53,8 +53,11 @@
   <nav class="adm-tabs" id="tabs">
    <button type="button" data-tab="news" class="on">الأخبار <span class="cnt" id="pending-cnt" hidden></span></button>
    <button type="button" data-tab="projects">المشاريع والبرامج</button>
+   <button type="button" data-tab="dash" data-admin>لوحة المتجر</button>
+   <button type="button" data-tab="dons" data-admin>التبرعات</button>
    <button type="button" data-tab="users" data-admin>المستخدمون والصلاحيات</button>
    <button type="button" data-tab="log" data-admin>سجل النشاط</button>
+   <button type="button" data-tab="settings" data-admin>الإعدادات</button>
   </nav>
 
   <!-- الأخبار -->
@@ -141,6 +144,11 @@
      <label>نقاط مميزة (نقطة في كل سطر)<textarea data-ml="points" rows="4" maxlength="2000"></textarea></label>
      <label>وسوم (مفصولة بمسافة)<input data-ml="tags" maxlength="300"></label>
     </div>
+    <h3>التبرعات</h3>
+    <div class="grid2">
+     <label class="chk"><input type="checkbox" name="donate" checked> يستقبل تبرعات في صفحة التبرع</label>
+     <label>المستهدف المالي (ريال، اختياري)<input name="goal" type="number" min="0" step="1" dir="ltr" placeholder="مثال: 50000"></label>
+    </div>
     <label class="chk"><input type="checkbox" name="published" checked> معروض في الموقع</label>
     <div class="row"><button class="btn btn-green" type="submit">حفظ المشروع</button></div>
    </form>
@@ -173,10 +181,55 @@
    <div class="bar"><h2>سجل النشاط</h2></div>
    <div class="list" id="log-list"></div>
   </div>
+
+  <!-- لوحة المتجر -->
+  <div class="pane" id="p-dash" hidden>
+   <div class="bar"><h2>لوحة أداء المتجر</h2>
+    <div class="row noprint" style="margin:0"><button class="btn btn-outline small" type="button" data-export="xlsx">تصدير Excel</button><button class="btn btn-outline small" type="button" data-export="pdf">تصدير PDF</button></div></div>
+   <div class="dfilters noprint" id="dash-filters"></div>
+   <p class="muted small dperiod" id="dash-period"></p>
+   <div id="dash-body"><p class="muted">جارٍ التحميل...</p></div>
+  </div>
+
+  <!-- التبرعات -->
+  <div class="pane" id="p-dons" hidden>
+   <div class="bar"><h2>تقرير التبرعات</h2>
+    <div class="row noprint" style="margin:0"><button class="btn btn-outline small" type="button" data-export="xlsx">تصدير Excel</button><button class="btn btn-outline small" type="button" data-export="pdf">تصدير PDF</button></div></div>
+   <div class="dfilters noprint" id="dons-filters"></div>
+   <p class="muted small dperiod" id="dons-period"></p>
+   <div class="dsum" id="dons-sum"></div>
+   <div id="dons-table"></div>
+   <h3 style="margin-top:34px">التبرعات الشهرية (الاستقطاع)</h3>
+   <div id="subs-table"><p class="muted">جارٍ التحميل...</p></div>
+  </div>
+
+  <!-- الإعدادات -->
+  <div class="pane" id="p-settings" hidden>
+   <div class="bar"><h2>إعدادات المتجر</h2></div>
+   <form id="f-set" class="adm-card">
+    <div class="gwarn" id="set-gw" hidden>بوابة الدفع غير مفعّلة بعد: أضف المفتاح السري MOYASAR_SECRET_KEY في إعدادات الوسيط على Cloudflare.</div>
+    <label class="chk big"><input type="checkbox" name="enabled"> فتح باب التبرع في الموقع</label>
+    <p class="muted small" style="margin-top:-8px">اتركه مغلقًا حتى صدور ترخيص الجمعية وتفعيل حساب بوابة الدفع. عند الإغلاق تظهر للزوار رسالة «يُفتح باب التبرع بعد صدور الترخيص».</p>
+    <div class="grid3">
+     <label>الحد الأدنى للتبرع (ريال)<input name="min" type="number" min="1" step="1" dir="ltr" required></label>
+     <label>المبالغ السريعة (مفصولة بفاصلة)<input name="presets" dir="ltr" placeholder="50, 100, 200, 500"></label>
+     <label>رقم الترخيص (يظهر في السند)<input name="license" maxlength="60" placeholder="يُضاف بعد التسجيل"></label>
+    </div>
+    <label class="chk"><input type="checkbox" name="gift"> السماح بالتبرع الإهدائي</label>
+    <label class="chk"><input type="checkbox" name="monthly"> السماح بالتبرع الشهري (الاستقطاع)</label>
+    <p class="muted small" style="margin-top:-8px">يحتاج التبرع الشهري تفعيل خاصية حفظ البطاقات (Tokenization) من «ميسّر» لحساب الجمعية، وإضافة MOYASAR_PUBLISHABLE_KEY ومهمة يومية (Cron) في الوسيط.</p>
+    <h3>حسابات الجمعية البنكية</h3>
+    <p class="muted small">تظهر في صفحة التبرع للتحويل المباشر عندما يكون باب التبرع مفتوحًا.</p>
+    <div id="bank-rows"></div>
+    <button type="button" class="btn btn-outline small" id="bank-add">+ إضافة حساب</button>
+    <div class="row"><button class="btn btn-green" type="submit">حفظ الإعدادات</button></div>
+   </form>
+  </div>
  </section>
 </main>
 <script src="assets/js/chat-config.js"></script>
 <script src="assets/js/icons.js"></script>
 <script src="assets/js/admin.js"></script>
+<script src="assets/js/admin-store.js"></script>
 </body>
 </html>

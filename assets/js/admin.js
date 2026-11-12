@@ -94,7 +94,8 @@
   $('#tabs').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     var t = b.dataset.tab; pane(t);
-    ({ news: loadNews, projects: loadProjects, users: loadUsers, log: loadLog })[t]();
+    var fn = ({ news: loadNews, projects: loadProjects, users: loadUsers, log: loadLog })[t] || (window.TNS_TABS || {})[t];
+    if (fn) fn();
   });
   $$('[data-back]').forEach(function (b) { b.addEventListener('click', function () { pane(b.dataset.back); }); });
 
@@ -263,7 +264,7 @@
   function projPayload(p, over) {
     var d = p || {};
     return Object.assign({ name: d.name, tag: d.tag, summary: d.summary, about: d.about, audience: d.audience, when: d.when, slogan: d.slogan, points: d.points, tags: d.tags,
-      icon: d.icon, scene: d.scene, image: d.image, kit: d.kit, services: d.services, published: d.published }, over || {});
+      icon: d.icon, scene: d.scene, image: d.image, kit: d.kit, services: d.services, published: d.published, donate: d.donate !== false, goal: d.goal || 0 }, over || {});
   }
   function openProj(p) {
     pEdit = p || null;
@@ -277,6 +278,7 @@
     fP.kitsel.value = !kit ? '' : kits.indexOf(kit) >= 0 ? kit : 'url'; fP.kiturl.value = fP.kitsel.value === 'url' ? kit : '';
     $('[data-kiturl]').hidden = fP.kitsel.value !== 'url';
     fP.published.checked = p ? p.published : true;
+    fP.donate.checked = p ? p.donate !== false : true; fP.goal.value = p && p.goal ? p.goal : '';
     SVC = p ? JSON.parse(JSON.stringify(p.services || [])) : [];
     pImg.set(p ? p.image : ''); renderSvc();
     pane('proj-edit');
@@ -286,7 +288,7 @@
     e.preventDefault();
     var d = pML.get();
     if (!d.name || !d.name.ar) { say(ERR.name, true); return; }
-    var body = projPayload(Object.assign({}, d, { icon: fP.icon.value, scene: fP.scene.value, image: pImg.id, published: fP.published.checked,
+    var body = projPayload(Object.assign({}, d, { icon: fP.icon.value, scene: fP.scene.value, image: pImg.id, published: fP.published.checked, donate: fP.donate.checked, goal: Math.max(0, Math.round(Number(fP.goal.value) || 0)),
       kit: fP.kitsel.value === 'url' ? fP.kiturl.value.trim() : fP.kitsel.value, services: SVC.filter(function (s) { return s.title && s.title.ar; }) }));
     if (!pEdit) body.id = fP.id.value.trim();
     (pEdit ? call('PUT', '/api/admin/projects/' + pEdit.id, body) : call('POST', '/api/admin/projects', body)).then(function () {
@@ -358,6 +360,9 @@
         r.log.map(function (l) { return '<tr><td>' + esc(fmtTime(l.at)) + '</td><td dir="ltr">' + esc(l.user) + '</td><td>' + esc(l.action) + '</td><td>' + esc(l.target) + '</td></tr>'; }).join('') + '</tbody></table>' : '<p class="muted">لا يوجد نشاط بعد.</p>';
     }).catch(function () {});
   }
+
+  // ---------- shared with admin-store.js ----------
+  window.TNS_ADM = { call: call, say: say, pane: pane, esc: esc, fmt: fmt, fmtTime: fmtTime, API: API, isAdmin: function () { return isAdmin(); }, projects: function () { return PROJ; }, loadProjects: loadProjects };
 
   // ---------- البداية ----------
   if (!API) { view('login'); say('لم يُضبط رابط الوسيط في assets/js/chat-config.js.', true); return; }
