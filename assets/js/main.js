@@ -37,29 +37,38 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// صفحة البرامج: عرض برنامج واحد حسب الاختيار (الافتراضي: العمرة)
-document.addEventListener('DOMContentLoaded', function () {
-  var tabs = document.querySelector('.prog-tabs'); if (!tabs) return;
-  var arts = document.querySelectorAll('article.prog'); if (!arts.length) return;
-  document.documentElement.classList.add('tabs-on');
+// صفحة البرامج: عرض برنامج واحد حسب الاختيار (الافتراضي: أول برنامج). تُستدعى من جديد بعد تحميل البرامج من المنصة.
+(function () {
+  var bound = false;
+  function first() { var a = document.querySelector('article.prog'); return a ? a.id : ''; }
   function show(id, scroll) {
-    var found = false;
-    arts.forEach(function (a) { var on = a.id === id; a.classList.toggle('active', on); if (on) found = true; });
-    if (!found) { id = 'umrah'; arts.forEach(function (a) { a.classList.toggle('active', a.id === id); }); }
+    var tabs = document.querySelector('.prog-tabs'), arts = document.querySelectorAll('article.prog');
+    if (!tabs || !arts.length) return;
+    if (!document.getElementById(id) || !document.getElementById(id).matches('article.prog')) id = first();
+    arts.forEach(function (a) { a.classList.toggle('active', a.id === id); });
     tabs.querySelectorAll('a').forEach(function (l) {
       var on = l.getAttribute('href') === '#' + id;
       l.classList.toggle('on', on); l.setAttribute('aria-selected', on ? 'true' : 'false');
     });
     if (scroll) { var t = document.getElementById(id); if (t) window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 220, behavior: 'smooth' }); }
   }
-  tabs.addEventListener('click', function (e) {
-    var l = e.target.closest('a'); if (!l) return; e.preventDefault();
-    var id = l.getAttribute('href').slice(1);
-    history.replaceState(null, '', '#' + id); show(id, false);
-  });
-  window.addEventListener('hashchange', function () { show(location.hash.slice(1), true); });
-  show(location.hash.slice(1) || 'umrah', !!location.hash);
-});
+  function init() {
+    var tabs = document.querySelector('.prog-tabs'); if (!tabs || !document.querySelector('article.prog')) return;
+    document.documentElement.classList.add('tabs-on');
+    if (!bound) {
+      bound = true;
+      tabs.addEventListener('click', function (e) {
+        var l = e.target.closest('a'); if (!l) return; e.preventDefault();
+        var id = l.getAttribute('href').slice(1);
+        history.replaceState(null, '', '#' + id); show(id, false);
+      });
+      window.addEventListener('hashchange', function () { show(location.hash.slice(1), true); });
+    }
+    show(location.hash.slice(1), false);
+  }
+  window.TNS_initProgTabs = init;
+  document.addEventListener('DOMContentLoaded', function () { init(); if (location.hash) show(location.hash.slice(1), true); });
+})();
 // قائمة اللغات: إغلاق عند النقر خارجها
 document.addEventListener('click', function (e) {
   document.querySelectorAll('details.langs[open]').forEach(function (d) { if (!d.contains(e.target)) d.removeAttribute('open'); });

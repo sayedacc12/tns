@@ -22,6 +22,7 @@
   <button class="menu-btn" aria-label="فتح القائمة" aria-expanded="false"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0D4842" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
  </div>
 </header>
+<div class="ticker" role="region" aria-label="شريط الأخبار"><div class="wrap"><a class="tk-label" href="news.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h3l7 4V6L7 10z"/><path d="M18 9a4 4 0 0 1 0 6"/></svg><span>أخبار الجمعية</span></a><div class="tk-view"><div class="tk-track" id="ticker"><a href="news.html?id=n-hajj-1448">قريبًا.. فتح باب التقديم لموسم حج 1448هـ</a><a href="news.html?id=n-soon">انتظرونا قريبًا</a></div></div></div></div>
 <main>
 <section class="page-hero" style="padding:0;background-image:url(assets/img/scenes/path.svg)"><div class="wrap"><div class="crumbs">الرئيسية / البحث</div><h1>البحث في الموقع</h1><p>ابحث في صفحات الموقع والبرامج ونصوص اللوائح والسياسات المعتمدة.</p></div></section>
 <section>
@@ -46,13 +47,13 @@
     <img class="logo" src="assets/img/logo-white.svg" alt="جمعية تيسير النسك">
     <p>جمعية أهلية غير ربحية تحت التأسيس، مقرها مدينة الرياض، تُعنى بتمكين غير القادرين من السعوديين والمقيمين من أداء الحج والعمرة.</p>
    </div>
-   <div><h4>روابط</h4><ul><li><a href="index.html">الرئيسية</a></li><li><a href="about.html">من نحن</a></li><li><a href="governance.html">الحوكمة والشفافية</a></li><li><a href="programs.html">البرامج</a></li><li><a href="partners.html">الشراكات</a></li><li><a href="volunteer.html">التطوع</a></li><li><a href="contact.html">تواصل معنا</a></li></ul></div>
+   <div><h4>روابط</h4><ul><li><a href="index.html">الرئيسية</a></li><li><a href="news.html">أخبار الجمعية</a></li><li><a href="about.html">من نحن</a></li><li><a href="governance.html">الحوكمة والشفافية</a></li><li><a href="programs.html">البرامج</a></li><li><a href="partners.html">الشراكات</a></li><li><a href="volunteer.html">التطوع</a></li><li><a href="contact.html">تواصل معنا</a></li></ul></div>
    <div><h4>الحوكمة والشفافية</h4><ul>
     <li><a href="governance.html#registration">شهادة التسجيل</a></li><li><a href="governance.html#board">مجلس الإدارة</a></li>
     <li><a href="governance.html#policies">السياسات واللوائح</a></li><li><a href="governance.html#financial">التقارير المالية</a></li>
     <li><a href="governance.html#reports">التقارير السنوية وتقارير الأثر</a></li><li><a href="governance.html#satisfaction">قياس الرضا</a></li>
     <li><a href="contact.html">الشكاوى والمقترحات</a></li></ul></div>
-   <div><h4>برامجنا</h4><ul><li><a href="programs.html#umrah">برنامج العمرة</a></li><li><a href="programs.html#wafa">مبادرة «حجّة الوفاء»</a></li><li><a href="programs.html#hajj">برنامج الحج</a></li><li><a href="programs.html#awareness">برنامج التوعية والتأهيل</a></li><li><a href="programs.html#academy">«أكاديمية تيسير لتأهيل المتطوعين»</a></li><li><a href="programs.html#observatory">«مرصد تيسير للدراسات»</a></li></ul></div>
+   <div><h4>برامجنا</h4><ul id="foot-progs"><li><a href="programs.html#umrah">برنامج العمرة</a></li><li><a href="programs.html#wafa">مبادرة «حجّة الوفاء»</a></li><li><a href="programs.html#hajj">برنامج الحج</a></li><li><a href="programs.html#awareness">برنامج التوعية والتأهيل</a></li><li><a href="programs.html#academy">«أكاديمية تيسير لتأهيل المتطوعين»</a></li><li><a href="programs.html#observatory">«مرصد تيسير للدراسات»</a></li></ul></div>
    <div><h4>تواصل معنا</h4>
     <div class="ci"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>الرياض، المملكة العربية السعودية</span></div>
     <div class="ci"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span>البريد الرسمي: يُعلن بعد الترخيص</span></div>
@@ -62,12 +63,14 @@
   </div>
   <div class="bottom">
    <span>© 2026م جمعية تيسير النسك. جميع الحقوق محفوظة. · مسجلة لدى المركز الوطني لتنمية القطاع غير الربحي برقم (يُضاف بعد التسجيل)</span>
-   <span>نموذج تصميم أولي</span>
+   <span>نموذج تصميم أولي · <a class="staff" href="admin.html" rel="nofollow">دخول الموظفين</a></span>
   </div>
  </div>
 </footer>
 <script src="assets/js/main.js"></script>
 <script src="assets/js/chat-config.js"></script>
 <script src="assets/js/chat.js" defer></script>
+<script src="assets/js/icons.js" defer></script>
+<script src="assets/js/cms.js" defer></script>
 </body>
 </html>
