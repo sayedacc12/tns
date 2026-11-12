@@ -38,6 +38,8 @@ const hits = new Map(); // best-effort, per worker instance
 const LANGS = ["ar", "en", "ur"];
 const SESSION_TTL = 8 * 60 * 60; // seconds
 const MAX_IMAGE = 1.5 * 1024 * 1024;
+const MAX_BODY = 2.5 * 1024 * 1024;
+const LOCK = { fails: 10, seconds: 30 * 60 }; // per-account lockout after repeated wrong passwords
 
 // ---------- helpers ----------
 function allowedList(env) { return (env.ALLOWED_ORIGINS || "https://sayedacc12.github.io").split(",").map(s => s.trim()).filter(Boolean); }
@@ -52,8 +54,18 @@ function cors(origin, env) {
     "Vary": "Origin",
   };
 }
+// security headers added to every response of the worker (JSON and images)
+const SEC = {
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "no-referrer",
+  "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'; base-uri 'none'",
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
+  "Cross-Origin-Resource-Policy": "cross-origin",
+};
 function json(body, status, headers, extra) {
-  return new Response(JSON.stringify(body), { status, headers: { ...headers, ...(extra || {}), "Content-Type": "application/json; charset=utf-8" } });
+  return new Response(JSON.stringify(body), { status, headers: { "Cache-Control": "no-store", ...headers, ...(extra || {}), ...SEC, "Content-Type": "application/json; charset=utf-8" } });
 }
 const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
 const rand = n => hex(crypto.getRandomValues(new Uint8Array(n)));
@@ -66,7 +78,9 @@ async function hashPw(pw, salt) {
 }
 function str(v, max) { return typeof v === "string" ? v.trim().slice(0, max) : ""; }
 function ml(v, max) { const o = {}; for (const l of LANGS) o[l] = str(v && v[l], max); return o; }
-function pwOk(p) { return typeof p === "string" && p.length >= 8 && p.length <= 100 && /[A-Za-z؀-ۿ]/.test(p) && /[0-9]/.test(p); }
+// at least 10 characters with letters and digits, not a well-known weak password
+const WEAK = ["password", "qwerty", "123456", "admin", "tns", "tayseer", "taysir", "nusuk", "riyadh", "ksa"];
+function pwOk(p) { return typeof p === "string" && p.length >= 10 && p.length <= 100 && /[A-Za-z؀-ۿ]/.test(p) && /[0-9]/.test(p) && !WEAK.some(w => p.toLowerCase().includes(w) && p.length - w.length < 6) && new Set(p).size >= 5; }
 
 // ---------- storage (Cloudflare KV) ----------
 async function load(env, key) {
@@ -98,6 +112,7 @@ async function auth(request, env) {
   const users = await load(env, "users");
   const u = users[s.username];
   if (!u || u.active === false) return null;
+  if (u.pwAt && (s.at || "") < u.pwAt) { await env.DB.delete("sess:" + m[1]); return null; } // signed in before the password changed
   return { ...u, token: m[1] };
 }
 
@@ -328,8 +343,8 @@ async function api(request, env, url, h) {
   let m = path.match(/^\/img\/([a-f0-9]{24})$/);
   if (method === "GET" && m) {
     const r = await env.DB.getWithMetadata("img:" + m[1], { type: "arrayBuffer" });
-    if (!r.value) return new Response("not found", { status: 404, headers: pub });
-    return new Response(r.value, { headers: { ...pub, "Content-Type": (r.metadata && r.metadata.type) || "image/jpeg", "Cache-Control": "public, max-age=31536000, immutable" } });
+    if (!r.value) return new Response("not found", { status: 404, headers: { ...pub, ...SEC } });
+    return new Response(r.value, { headers: { ...pub, ...SEC, "Content-Type": (r.metadata && r.metadata.type) || "image/jpeg", "Cache-Control": "public, max-age=31536000, immutable" } });
   }
 
   if (method === "GET" && path === "/api/store") {
@@ -401,7 +416,12 @@ async function api(request, env, url, h) {
   const origin = request.headers.get("Origin") || "";
   if (!allowedList(env).includes(origin)) return json({ error: "origin" }, 403, h);
   let body = {};
-  if (method === "POST" || method === "PUT") { try { const t = await request.text(); body = t ? JSON.parse(t) : {}; } catch { return json({ error: "json" }, 400, h); } }
+  if (method === "POST" || method === "PUT") {
+    let t; try { t = await request.text(); } catch { return json({ error: "json" }, 400, h); }
+    if (t.length > MAX_BODY) return json({ error: "too_large" }, 413, h);
+    try { body = t ? JSON.parse(t) : {}; } catch { return json({ error: "json" }, 400, h); }
+    if (!body || typeof body !== "object" || Array.isArray(body)) return json({ error: "json" }, 400, h);
+  }
 
   if (method === "POST" && path === "/api/donate") {
     const ip = request.headers.get("CF-Connecting-IP") || "local", t0 = Date.now();
@@ -481,17 +501,25 @@ async function api(request, env, url, h) {
     const ip = request.headers.get("CF-Connecting-IP") || "local";
     const fails = parseInt(await env.DB.get("fail:" + ip) || "0", 10);
     if (fails >= 8) return json({ error: "too_many" }, 429, h);
-    const username = str(body.username, 40).toLowerCase(), password = typeof body.password === "string" ? body.password : "";
+    const username = str(body.username, 40).toLowerCase(), password = typeof body.password === "string" ? body.password.slice(0, 200) : "";
+    const lockKey = "lock:" + username.replace(/[^a-z0-9._-]/g, "").slice(0, 40);
+    const ufails = parseInt(await env.DB.get(lockKey) || "0", 10);
+    if (ufails >= LOCK.fails) return json({ error: "locked" }, 429, h);
     const users = await load(env, "users");
     let u = users[username];
     if (!u && !Object.keys(users).length && username === "admin" && env.ADMIN_INITIAL_PASSWORD && eq(password, env.ADMIN_INITIAL_PASSWORD)) {
       const salt = rand(16);
       u = users.admin = { username: "admin", name: "مدير النظام", role: "admin", active: true, salt, hash: await hashPw(password, salt), mustChange: true, createdAt: now() };
       await save(env, "users", users);
-    } else if (!u || u.active === false || !eq(await hashPw(password, u.salt), u.hash)) {
+    } else if (!u || u.active === false || !eq(await hashPw(password, u ? u.salt : "x".repeat(32)), u ? u.hash : "")) {
       await env.DB.put("fail:" + ip, String(fails + 1), { expirationTtl: 900 });
+      if (u) {
+        await env.DB.put(lockKey, String(ufails + 1), { expirationTtl: LOCK.seconds });
+        if (ufails + 1 === LOCK.fails) await log(env, { username: "system" }, "قفل حساب مؤقتًا بعد محاولات دخول خاطئة", u.username + " – IP " + ip);
+      }
       return json({ error: "bad_login" }, 401, h);
     }
+    await env.DB.delete(lockKey);
     const token = rand(32);
     await env.DB.put("sess:" + token, JSON.stringify({ username: u.username, at: now() }), { expirationTtl: SESSION_TTL });
     u.lastLogin = now(); users[u.username] = u; await save(env, "users", users);
@@ -510,8 +538,10 @@ async function api(request, env, url, h) {
     if (!eq(await hashPw(String(body.old || ""), me.salt), me.hash)) return json({ error: "bad_old" }, 400, h);
     if (!pwOk(body.new) || body.new === body.old) return json({ error: "weak" }, 400, h);
     const users = await load(env, "users"); const u = users[me.username];
-    u.salt = rand(16); u.hash = await hashPw(body.new, u.salt); u.mustChange = false;
+    u.salt = rand(16); u.hash = await hashPw(body.new, u.salt); u.mustChange = false; u.pwAt = now();
     await save(env, "users", users); await log(env, me, "تغيير كلمة المرور", "");
+    // keep this session, sign out every other one
+    await env.DB.put("sess:" + me.token, JSON.stringify({ username: u.username, at: new Date(Date.now() + 1000).toISOString() }), { expirationTtl: SESSION_TTL });
     return json({ user: publicUser(u) }, 200, h);
   }
 
@@ -735,7 +765,7 @@ async function api(request, env, url, h) {
       u.name = str(body.name, 80) || u.name; u.role = role; u.active = active;
       if (body.password) {
         if (!pwOk(body.password)) return json({ error: "weak" }, 400, h);
-        u.salt = rand(16); u.hash = await hashPw(body.password, u.salt); u.mustChange = true;
+        u.salt = rand(16); u.hash = await hashPw(body.password, u.salt); u.mustChange = true; u.pwAt = now();
       }
       await save(env, "users", users); await log(env, me, body.password ? "تعديل مستخدم وإعادة تعيين كلمة المرور" : "تعديل مستخدم", u.username);
       return json({ user: publicUser(u) }, 200, h);
@@ -826,7 +856,10 @@ export default {
     const url = new URL(request.url);
     const origin = request.headers.get("Origin") || "";
     const h = cors(origin, env);
-    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: h });
+    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { ...h, ...SEC } });
+    // reject oversized bodies early (the largest legitimate body is an image upload of 1.5 MB in base64)
+    if (+(request.headers.get("Content-Length") || 0) > MAX_BODY) return json({ error: "too_large" }, 413, h);
+    if (!["GET", "POST", "PUT", "DELETE"].includes(request.method)) return json({ error: "method" }, 405, h);
     try {
       if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/img/")) return await api(request, env, url, h);
       if (request.method !== "POST") return json({ ok: true, service: "tns" }, 200, h);

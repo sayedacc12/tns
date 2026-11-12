@@ -1,6 +1,8 @@
 /* سند القبض، بطاقة الإهداء، والتحقق من السند – جمعية تيسير النسك */
 (function () {
   'use strict';
+  if (window.top !== window.self) { try { window.top.location = window.self.location.href; } catch (e) { document.documentElement.innerHTML = ''; } return; }
+  document.addEventListener('click', function (e) { if (e.target.closest('[data-reload]')) location.reload(); });
   var API = (window.TNS_API || window.TNS_CHAT_URL || '').replace(/\/+$/, '');
   var Q = new URLSearchParams(location.search);
   var box = document.getElementById('rcp');
@@ -51,13 +53,13 @@
   function qr(el, text) {
     function draw() { try { new window.QRCode(el, { text: text, width: 112, height: 112, colorDark: '#083530', colorLight: '#ffffff', correctLevel: window.QRCode.CorrectLevel.M }); } catch (e) {} }
     if (window.QRCode) return draw();
-    var s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'; s.onload = draw; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = 'assets/js/vendor/qrcode-1.0.0.min.js'; s.onload = draw; document.head.appendChild(s);
   }
   var here = location.origin + location.pathname;
 
   function receipt(r, extra) {
     if (r.status !== 'paid') {
-      if (r.status === 'initiated') return msg('لم يكتمل الدفع بعد', 'لم تصلنا بعد نتيجة عملية الدفع. إذا أتممت الدفع فحدّث الصفحة بعد دقيقة، وإن لم تتمه فيمكنك <a href="donate.html">العودة إلى صفحة التبرع</a>.<br><br><button class="btn btn-gold" onclick="location.reload()">تحديث</button>', 'warn');
+      if (r.status === 'initiated') return msg('لم يكتمل الدفع بعد', 'لم تصلنا بعد نتيجة عملية الدفع. إذا أتممت الدفع فحدّث الصفحة بعد دقيقة، وإن لم تتمه فيمكنك <a href="donate.html">العودة إلى صفحة التبرع</a>.<br><br><button class="btn btn-gold" type="button" data-reload>تحديث</button>', 'warn');
       if (r.status === 'refunded') return msg('أُعيد المبلغ', 'نعتذر، تُقبل التبرعات بالبطاقات الصادرة من بنوك داخل المملكة العربية السعودية فقط، وقد أُعيد المبلغ إلى بطاقتك.', 'warn');
       return msg('لم تتم عملية الدفع', 'لم يُخصم أي مبلغ. يمكنك <a href="donate.html">المحاولة مرة أخرى</a>، ولأي استفسار تواصل على <a href="tel:+966546684628" dir="ltr">0546684628</a>.', 'warn');
     }
@@ -127,7 +129,7 @@
     var mid = Q.get('m'), mt = Q.get('t');
     load = get('/api/monthly/' + encodeURIComponent(mid) + '?t=' + encodeURIComponent(mt) + (Q.get('id') ? '&id=' + encodeURIComponent(Q.get('id')) : '')).then(function (j) {
       if (j.receipt) receipt(j.receipt, monthlyBanner(j.monthly));
-      else if (j.monthly && j.monthly.status === 'pending') msg('لم يكتمل الدفع بعد', 'لم تصلنا نتيجة عملية الدفع. حدّث الصفحة بعد دقيقة.<br><br><button class="btn btn-gold" onclick="location.reload()">تحديث</button>', 'warn');
+      else if (j.monthly && j.monthly.status === 'pending') msg('لم يكتمل الدفع بعد', 'لم تصلنا نتيجة عملية الدفع. حدّث الصفحة بعد دقيقة.<br><br><button class="btn btn-gold" type="button" data-reload>تحديث</button>', 'warn');
       else if (j.monthly && j.monthly.status === 'refused') msg('أُعيد المبلغ', 'تُقبل التبرعات بالبطاقات الصادرة من بنوك داخل المملكة فقط، وقد أُعيد المبلغ إلى بطاقتك.', 'warn');
       else msg('لم تتم عملية الدفع', 'لم يُخصم أي مبلغ. يمكنك <a href="donate.html">المحاولة مرة أخرى</a>.', 'warn');
       var stop = document.getElementById('m-stop');

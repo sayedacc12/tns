@@ -306,7 +306,7 @@
   // ---------- export ----------
   function loadXlsx(cb) {
     if (window.XLSX) return cb();
-    var s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload = cb; s.onerror = function () { A.say('تعذر تحميل مكتبة Excel، تحقق من الاتصال.', true); }; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = 'assets/js/vendor/xlsx-0.18.5.full.min.js'; s.onload = cb; s.onerror = function () { A.say('تعذر تحميل مكتبة Excel، تحقق من الاتصال.', true); }; document.head.appendChild(s);
   }
   function exportXlsx() {
     loadXlsx(function () {

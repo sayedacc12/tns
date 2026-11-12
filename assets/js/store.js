@@ -1,6 +1,7 @@
 /* متجر التبرعات – جمعية تيسير النسك */
 (function () {
   'use strict';
+  if (window.top !== window.self) { try { window.top.location = window.self.location.href; } catch (e) { document.documentElement.innerHTML = ''; } return; }
   var API = (window.TNS_API || window.TNS_CHAT_URL || '').replace(/\/+$/, '');
   var LANG = document.documentElement.lang || 'ar';
   var PRE = LANG === 'ar' ? '' : '../';

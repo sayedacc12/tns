@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.moyasar.com; style-src 'self' 'unsafe-inline' https://cdn.moyasar.com; img-src 'self' data: blob: https://green-union-c3cd.sayed-acc12.workers.dev https://cdn.moyasar.com; font-src 'self' data:; connect-src 'self' https://green-union-c3cd.sayed-acc12.workers.dev https://api.moyasar.com; frame-src https://*.moyasar.com; form-action 'self' https://*.moyasar.com; base-uri 'self'; object-src 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
 <title>لوحة التحكم | جمعية تيسير النسك</title>
 <meta name="theme-color" content="#0D4842">
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
@@ -39,11 +41,11 @@
  <!-- تغيير كلمة المرور -->
  <section class="adm-card login" id="v-pw" hidden>
   <h1>تغيير كلمة المرور</h1>
-  <p class="muted" id="pw-note">اختر كلمة مرور جديدة لا تقل عن 8 أحرف وتحتوي على حروف وأرقام.</p>
+  <p class="muted" id="pw-note">اختر كلمة مرور جديدة لا تقل عن 10 أحرف وتحتوي على حروف وأرقام.</p>
   <form id="f-pw">
    <label>كلمة المرور الحالية<input name="old" type="password" autocomplete="current-password" required dir="ltr"></label>
-   <label>كلمة المرور الجديدة<input name="new" type="password" autocomplete="new-password" required minlength="8" dir="ltr"></label>
-   <label>تأكيد كلمة المرور الجديدة<input name="new2" type="password" autocomplete="new-password" required minlength="8" dir="ltr"></label>
+   <label>كلمة المرور الجديدة<input name="new" type="password" autocomplete="new-password" required minlength="10" dir="ltr"></label>
+   <label>تأكيد كلمة المرور الجديدة<input name="new2" type="password" autocomplete="new-password" required minlength="10" dir="ltr"></label>
    <div class="row"><button class="btn btn-green" type="submit">حفظ</button><button class="btn btn-outline" type="button" id="pw-cancel">إلغاء</button></div>
   </form>
  </section>
@@ -210,7 +212,7 @@
      <label>اسم المستخدم (بالإنجليزية)<input name="username" dir="ltr" pattern="[a-z][a-z0-9._\-]{2,29}" required></label>
      <label>الاسم الظاهر<input name="name" maxlength="80" required></label>
      <label>الصلاحية<select name="role"><option value="editor">محرر (صلاحيات محدودة)</option><option value="admin">مدير (صلاحيات كاملة)</option></select></label>
-     <label>كلمة مرور مؤقتة<span class="inl"><input name="password" dir="ltr" minlength="8"><button type="button" class="lnk" id="gen-pw">توليد</button></span></label>
+     <label>كلمة مرور مؤقتة<span class="inl"><input name="password" dir="ltr" minlength="10"><button type="button" class="lnk" id="gen-pw">توليد</button></span></label>
     </div>
     <label class="chk" data-edit-only><input type="checkbox" name="active" checked> الحساب مفعّل</label>
     <p class="muted small">يُطلب من المستخدم تغيير كلمة المرور المؤقتة عند أول دخول. أرسلها له بطريقة آمنة.</p>

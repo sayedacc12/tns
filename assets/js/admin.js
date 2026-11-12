@@ -1,5 +1,6 @@
 // لوحة تحكم المحتوى لجمعية تيسير النسك (تتصل بوسيط Cloudflare نفسه الذي يشغّل المساعد الذكي)
 (function () {
+  if (window.top !== window.self) { try { window.top.location = window.self.location.href; } catch (e) { document.documentElement.innerHTML = ''; } return; }
   var API = (window.TNS_API || window.TNS_CHAT_URL || '').replace(/\/+$/, '');
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -13,13 +14,13 @@
   var ST = { published: ['منشور', 'green'], pending: ['بانتظار الاعتماد', 'amber'], draft: ['مسودة', 'gray'] };
   var ERR = {
     bad_login: 'اسم المستخدم أو كلمة المرور غير صحيحة.', too_many: 'محاولات دخول كثيرة. حاول بعد 15 دقيقة.', auth: 'انتهت الجلسة، سجّل الدخول من جديد.',
-    must_change: 'غيّر كلمة المرور المؤقتة أولًا.', forbidden: 'لا تملك صلاحية هذا الإجراء.', weak: 'كلمة المرور ضعيفة: 8 أحرف على الأقل وتحتوي على حروف وأرقام.',
+    must_change: 'غيّر كلمة المرور المؤقتة أولًا.', forbidden: 'لا تملك صلاحية هذا الإجراء.', weak: 'كلمة المرور ضعيفة: 10 أحرف على الأقل بحروف وأرقام، وألا تكون كلمة شائعة أو مكررة الأحرف.',
     bad_old: 'كلمة المرور الحالية غير صحيحة.', exists: 'اسم المستخدم مستخدم من قبل.', username: 'اسم المستخدم بأحرف إنجليزية صغيرة (3 أحرف فأكثر) ويبدأ بحرف.',
     self: 'لا يمكن حذف حسابك أو آخر مدير، ولا إلغاء صلاحيته أو تعطيله.', title: 'عنوان الخبر بالعربية مطلوب.', name: 'اسم المشروع بالعربية مطلوب.',
     size: 'حجم الصورة كبير جدًا.', type: 'نوع الصورة غير مدعوم (JPG أو PNG أو WEBP).', image: 'تعذّرت قراءة الصورة.', not_found: 'العنصر غير موجود، ربما حُذف.',
     origin: 'هذا الموقع غير مسموح له بالاتصال بالمنصة (راجع ALLOWED_ORIGINS في إعدادات الوسيط).', no_db: 'المنصة غير مفعّلة بعد: أضف قاعدة بيانات KV باسم DB في إعدادات الوسيط.',
     network: 'تعذّر الاتصال بالمنصة. تحقق من الإنترنت ومن رابط الوسيط.', server: 'حدث خطأ في الخادم.',
-    decision: 'اختر القرار.', note: 'اكتب سبب الإرجاع أو الرفض في الملاحظات.', goal: 'المستهدف المالي مطلوب عند النشر في المتجر.',
+    locked: 'هذا الحساب مقفل مؤقتًا 30 دقيقة بسبب محاولات دخول خاطئة متكررة. حاول لاحقًا أو اطلب من المدير التحقق.', too_large: 'حجم البيانات المرسلة كبير جدًا.', decision: 'اختر القرار.', note: 'اكتب سبب الإرجاع أو الرفض في الملاحظات.', goal: 'المستهدف المالي مطلوب عند النشر في المتجر.',
     min: 'الحد الأدنى للمشروع لا يقل عن الحد الأدنى العام في الإعدادات.', max: 'الحد الأعلى يجب أن يكون أكبر من الحد الأدنى.', not_approved: 'المشروع غير معتمد بعد.'
   };
 
@@ -53,7 +54,7 @@
   function view(v) {
     ['login', 'pw', 'app'].forEach(function (k) { $('#v-' + k).hidden = k !== v; });
     $('#who').hidden = v === 'login';
-    if (v === 'pw') { $('#f-pw').reset(); $('#pw-cancel').hidden = !!(me && me.mustChange); $('#pw-note').textContent = me && me.mustChange ? 'هذا أول دخول لك بكلمة مرور مؤقتة: اختر كلمة مرور جديدة لا تقل عن 8 أحرف وتحتوي على حروف وأرقام.' : 'اختر كلمة مرور جديدة لا تقل عن 8 أحرف وتحتوي على حروف وأرقام.'; }
+    if (v === 'pw') { $('#f-pw').reset(); $('#pw-cancel').hidden = !!(me && me.mustChange); $('#pw-note').textContent = me && me.mustChange ? 'هذا أول دخول لك بكلمة مرور مؤقتة: اختر كلمة مرور جديدة لا تقل عن 10 أحرف وتحتوي على حروف وأرقام.' : 'اختر كلمة مرور جديدة لا تقل عن 10 أحرف وتحتوي على حروف وأرقام.'; }
   }
   function pane(p) {
     $$('.pane').forEach(function (x) { x.hidden = x.id !== 'p-' + p; });
@@ -351,6 +352,7 @@
     call('GET', '/api/admin/settings').then(function (r) {
       GMIN = (r.settings && r.settings.donations && r.settings.donations.min) || r.donations && r.donations.min || 20;
     }).catch(function () {}).then(function () {
+  if (window.top !== window.self) { try { window.top.location = window.self.location.href; } catch (e) { document.documentElement.innerHTML = ''; } return; }
       fR.min.min = GMIN; fR.min.value = s.min || GMIN;
       $('#pr-minnote').textContent = 'الحد الأدنى العام في الإعدادات ' + num(GMIN) + ' ريال، ولا يقل حد المشروع عنه. اترك المبالغ السريعة فارغة لاستخدام المبالغ العامة.';
     });
