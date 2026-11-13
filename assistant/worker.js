@@ -124,6 +124,23 @@ function cleanBy(schema, v) {
   return o;
 }
 
+// search entries for the documents on the governance page (titles + text extracted from uploaded PDFs)
+async function buildGovIndex(env, gov) {
+  const out = [];
+  const text = async ref => /^f:[a-f0-9]{24}$/.test(ref) ? ((await env.DB.get("ftxt:" + ref.slice(2))) || "") : "";
+  if (gov.docs.show !== false) for (const g of gov.docs.groups) for (const x of g.items) {
+    if (!x.file) continue;
+    const t = {}; for (const l of LANGS) t[l] = [x.code[l] || x.code.ar, x.name[l] || x.name.ar].filter(Boolean).join(" ");
+    out.push({ t, c: g.title, u: x.file, x: await text(x.file) });
+  }
+  if (gov.disclose.show !== false) for (const x of gov.disclose.items) {
+    if (!x.file) continue;
+    const xt = {}; for (const l of LANGS) xt[l] = x.text[l] || x.text.ar;
+    out.push({ t: x.title, c: gov.disclose.kick, u: x.file, x: ((xt.ar || "") + " " + await text(x.file)).trim(), xt });
+  }
+  await env.DB.put("govidx", JSON.stringify(out));
+}
+
 // ---------- storage (Cloudflare KV) ----------
 async function load(env, key) {
   const v = await env.DB.get(key, { type: "json" });
@@ -399,6 +416,11 @@ async function api(request, env, url, h) {
     const { ["Content-Security-Policy"]: _csp, ...sec } = SEC; // the browser's PDF viewer does not run under a strict CSP
     return new Response(r.value, { headers: { ...pub, ...sec, "Content-Type": md.type || "application/pdf",
       "Content-Disposition": "inline; filename*=UTF-8''" + encodeURIComponent(name), "Cache-Control": "public, max-age=31536000, immutable" } });
+  }
+
+  if (method === "GET" && path === "/api/search-docs") {
+    // null = the page still has its original documents: the site's built-in index is used as is
+    return json({ items: await env.DB.get("govidx", { type: "json" }) }, 200, pub, { "Cache-Control": "public, max-age=60" });
   }
 
   if (method === "GET" && path === "/api/store") {
@@ -737,12 +759,12 @@ async function api(request, env, url, h) {
     const gov = cleanBy(GOV_SCHEMA, body.gov);
     if (!gov.hero.title.ar) return json({ error: "gov_title" }, 400, h);
     gov.updatedAt = now(); gov.updatedBy = me.username;
-    await save(env, "gov", gov); await log(env, me, "تعديل صفحة الحوكمة والشفافية", "");
+    await save(env, "gov", gov); await buildGovIndex(env, gov); await log(env, me, "تعديل صفحة الحوكمة والشفافية", "");
     return json({ gov }, 200, h);
   }
   if (path === "/api/admin/gov/reset" && method === "POST") {
     if (!admin) return json({ error: "forbidden" }, 403, h);
-    await env.DB.delete("gov"); await log(env, me, "استعادة المحتوى الأصلي لصفحة الحوكمة", "");
+    await env.DB.delete("gov"); await env.DB.delete("govidx"); await log(env, me, "استعادة المحتوى الأصلي لصفحة الحوكمة", "");
     return json({ gov: SEED.gov }, 200, h);
   }
   if (path === "/api/admin/files" && method === "POST") {
@@ -757,6 +779,8 @@ async function api(request, env, url, h) {
     const name = str(body.name, 120).replace(/[\\/:*?"<>|\r\n]/g, "_") || "file";
     const id = rand(12);
     await env.DB.put("file:" + id, bytes, { metadata: { type, name, size: bytes.length, by: me.username, at: now() } });
+    const txt = str(body.text, 60000); // text extracted from the PDF in the browser, for the site search
+    if (txt) await env.DB.put("ftxt:" + id, txt);
     await log(env, me, "رفع ملف", name);
     return json({ id, ref: "f:" + id, type, name, size: bytes.length }, 200, h);
   }

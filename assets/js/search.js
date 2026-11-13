@@ -48,7 +48,7 @@
     hits.sort(function (a, b) { return b.s - a.s; });
     cnt.textContent = hits.length ? (M.count + hits.length) : M.none;
     res.innerHTML = hits.slice(0, 40).map(function (h) {
-      var it = h.it, doc = /^(\.\.\/)?(docs|kits)\//.test(it.u);
+      var it = h.it, doc = /^(\.\.\/)?(docs|kits)\//.test(it.u) || /\/file\/[a-f0-9]{24}$/.test(it.u);
       return '<a class="sr" href="' + encodeURI(it.u) + '"' + (doc ? ' target="_blank"' : '') + '>' +
         '<span class="sr-cat">' + esc(it.c) + (doc ? ' · PDF' : ' · ' + esc(it.p)) + '</span>' +
         '<b>' + esc(it.t) + '</b><span class="sr-x">' + snippet(it, terms) + '</span></a>';
@@ -60,4 +60,32 @@
   q.addEventListener('input', run);
   var init = new URLSearchParams(location.search).get('q'); if (init) q.value = init;
   run();
+
+  // الوثائق المضافة أو المعدّلة من لوحة التحكم (صفحة الحوكمة): تحل محل قائمة الوثائق المبنية مع الموقع
+  // chat-config.js loads after this file: read the platform address once the page is parsed
+  function live() {
+  var API = (window.TNS_API || window.TNS_CHAT_URL || '').replace(/\/+$/, '');
+  if (!API || !window.fetch) return;
+  var PRE = L === 'ar' ? '' : '../';
+  function tx(o) { return o ? (typeof o === 'string' ? o : (o[L] || o.ar || '')) : ''; }
+  function link(r) {
+    if (/^f:[a-f0-9]{24}$/.test(r)) return API + '/file/' + r.slice(2);
+    if (/^i:[a-f0-9]{24}$/.test(r)) return API + '/img/' + r.slice(2);
+    if (/^https:\/\//.test(r) || /^[a-z-]+\.html/.test(r)) return r;
+    return PRE + r;
+  }
+  fetch(API + '/api/search-docs').then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) {
+    if (!d || !Array.isArray(d.items)) return;
+    var isDoc = function (u) { return /^(\.\.\/)?docs\//.test(u); };
+    var old = {}; IDX.forEach(function (it) { if (isDoc(it.u)) old[it.u] = it.x; });
+    var keep = IDX.filter(function (it) { return !isDoc(it.u); });
+    d.items.forEach(function (it) {
+      var u = link(it.u);
+      keep.push({ t: tx(it.t), u: u, c: tx(it.c), p: '', x: (L === 'ar' ? it.x : tx(it.xt) || '') || old[u] || it.x || '' , live: true });
+    });
+    IDX.length = 0; keep.forEach(function (it) { it._t = norm(it.t); it._x = norm(it.x); IDX.push(it); });
+    run();
+  }).catch(function () {});
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', live); else live();
 })();

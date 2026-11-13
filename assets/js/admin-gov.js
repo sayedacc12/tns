@@ -127,6 +127,31 @@
     window.scrollTo(0, y);
   }
 
+  // ---------- نص ملفات PDF (لتشملها نتائج البحث في الموقع) ----------
+  var pdfLib = null;
+  function loadPdf() {
+    if (pdfLib) return pdfLib;
+    pdfLib = new Promise(function (ok, bad) {
+      var sc = document.createElement('script'); sc.src = 'assets/js/vendor/pdf-3.11.174.min.js';
+      sc.onload = function () { window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/js/vendor/pdf.worker-3.11.174.min.js'; ok(window.pdfjsLib); };
+      sc.onerror = bad; document.head.appendChild(sc);
+    });
+    return pdfLib;
+  }
+  // تصحيح تفكك «ال» في النص المستخرج من ملفات PDF العربية (مثل: األنظمة ← الأنظمة)
+  function fixAr(t) { return t.replace(/اإل/g, 'الإ').replace(/األ/g, 'الأ').replace(/اآل/g, 'الآ').replace(/اال/g, 'الا').replace(/اهلل/g, 'الله').replace(/\s+/g, ' ').trim(); }
+  function pdfText(file) {
+    return loadPdf().then(function (lib) { return file.arrayBuffer().then(function (buf) { return lib.getDocument({ data: buf }).promise; }); })
+      .then(function (doc) {
+        var n = Math.min(doc.numPages, 80), out = [], chain = Promise.resolve();
+        for (var i = 1; i <= n; i++) (function (i) {
+          chain = chain.then(function () { return doc.getPage(i); }).then(function (pg) { return pg.getTextContent(); })
+            .then(function (c) { out.push(c.items.map(function (x) { return x.str; }).join(' ')); });
+        })(i);
+        return chain.then(function () { return fixAr(out.join(' ')).slice(0, 60000); });
+      }).catch(function () { return ''; }); // the file is still uploaded if its text cannot be read
+  }
+
   // ---------- التفاعل ----------
   box.addEventListener('input', function (e) {
     var el = e.target, p = el.dataset.p; if (!p) return;
@@ -152,8 +177,9 @@
     if (!/^(application\/pdf|image\/jpeg|image\/png)$/.test(f.type)) { A.say('نوع الملف غير مدعوم: ارفع PDF أو صورة JPG أو PNG.', true); el.value = ''; return; }
     var rd = new FileReader();
     rd.onload = function () {
-      A.say('جارٍ رفع الملف…');
-      A.call('POST', '/api/admin/files', { name: f.name, data: rd.result })
+      A.say(f.type === 'application/pdf' ? 'جارٍ قراءة نص الملف للبحث ثم رفعه…' : 'جارٍ رفع الملف…');
+      (f.type === 'application/pdf' ? pdfText(f) : Promise.resolve(''))
+        .then(function (text) { return A.call('POST', '/api/admin/files', { name: f.name, data: rd.result, text: text }); })
         .then(function (r) { set(p, r.ref); mark(); render(); A.say('رُفع الملف «' + r.name + '». لا تنسَ حفظ التغييرات.'); }).catch(function () {});
     };
     rd.readAsDataURL(f);
