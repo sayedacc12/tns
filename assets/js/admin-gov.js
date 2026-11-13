@@ -200,7 +200,11 @@
   function load() {
     if (dirty && G) { render(); return; }
     box.innerHTML = '<p class="muted">جارٍ التحميل…</p>';
-    A.call('GET', '/api/admin/gov').then(function (r) { G = r.gov; LANG = 'ar'; clean(); render(); }).catch(function () {});
+    A.call('GET', '/api/admin/gov').then(function (r) { G = r.gov; LANG = 'ar'; clean(); render(); }).catch(function (e) {
+      box.innerHTML = '<div class="adm-card"><p class="gwarn" style="margin:0">' + (e && e.error === 'not_found' ?
+        'الوسيط (Worker) في Cloudflare ما زال على النسخة السابقة: الصق محتوى ملف worker.js الجديد في Cloudflare ثم اضغط Deploy، وبعدها حدّث هذه الصفحة.' :
+        'تعذّر تحميل محتوى الصفحة. حدّث الصفحة وحاول مرة أخرى.') + '</p></div>';
+    });
   }
   $('#gov-nav').innerHTML = SECS.map(function (s) { return '<button type="button" data-go="' + s[0] + '">' + esc(s[1]) + '</button>'; }).join('');
   window.TNS_TABS = window.TNS_TABS || {};
