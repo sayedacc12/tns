@@ -661,3 +661,26 @@ body:not(.store-on) .btn-quick{opacity:.45;pointer-events:none}
 .dcard.closed .dimg{filter:grayscale(.6)}
 .dshut{display:inline-block;background:var(--cream);color:var(--sage);border-radius:999px;padding:8px 18px;font-size:15px}
 .ddlg [hidden]{display:none!important}
+/* governance page: managed from the control panel */
+.leader .av{overflow:hidden}
+.leader .av img{width:100%;height:100%;object-fit:cover;display:block}
+.gmeta{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.gmeta a{display:inline-flex;align-items:center;gap:6px;font-size:15px}
+.org{display:flex;flex-direction:column;align-items:center;gap:0;margin-top:10px}
+.org-n{border-radius:14px;padding:12px 22px;text-align:center;font-size:18px;min-width:220px;max-width:100%;border:1.5px solid var(--g)}
+.org-n.gold{background:var(--gold);color:#fff;border-color:var(--gold)}
+.org-n.main{background:var(--g);color:#fff}
+.org-n.dark{background:#083530;color:#fff;border-color:#083530}
+.org-n.soft{background:#E8EFEC;color:#1d2b28;font-size:16px;min-width:0;padding:10px 14px}
+.org-v{display:block;width:2px;height:26px;background:var(--gold)}
+.org-mid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;width:100%;gap:0;background:linear-gradient(var(--gold),var(--gold)) center/2px 100% no-repeat}
+.org-side{display:flex;flex-direction:column;align-items:center;padding:10px 14px;border:1.5px dashed #E2CC97;border-radius:16px;margin-inline-start:34px;position:relative;justify-self:start}
+.org-side::before{content:"";position:absolute;inset-inline-start:-36px;top:50%;width:34px;border-top:2px dashed var(--gold)}
+@media (max-width:760px){.org-mid{display:flex;flex-direction:column;background:none}.org-mid>span{display:none}.org-side{margin:14px 0 0}.org-side::before{display:none}}
+.org-units .org-n{display:flex;align-items:center;justify-content:center}
+.org-cap{font-size:14px;color:#7A5F22;margin-bottom:8px}
+.org-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.org-units{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;width:100%;max-width:1060px;padding-top:16px;border-top:2px solid var(--gold)}
+.org-img{margin:10px auto 0;text-align:center}
+.org-img img{max-width:100%;height:auto;border-radius:14px;background:#fff}
+.center{text-align:center}

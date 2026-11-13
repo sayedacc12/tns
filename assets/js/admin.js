@@ -13,6 +13,7 @@
     grad: 'تدريب', search: 'بحث', clock: 'وقت', megaphone: 'إعلان' };
   var ST = { published: ['منشور', 'green'], pending: ['بانتظار الاعتماد', 'amber'], draft: ['مسودة', 'gray'] };
   var ERR = {
+    gov_title: 'عنوان صفحة الحوكمة بالعربية مطلوب.', file: 'تعذّرت قراءة الملف.', file_size: 'حجم الملف أكبر من 8 ميغابايت.', file_type: 'نوع الملف غير مدعوم: PDF أو JPG أو PNG فقط.',
     bad_login: 'اسم المستخدم أو كلمة المرور غير صحيحة.', too_many: 'محاولات دخول كثيرة. حاول بعد 15 دقيقة.', auth: 'انتهت الجلسة، سجّل الدخول من جديد.',
     must_change: 'غيّر كلمة المرور المؤقتة أولًا.', forbidden: 'لا تملك صلاحية هذا الإجراء.', weak: 'كلمة المرور ضعيفة: 10 أحرف على الأقل بحروف وأرقام، وألا تكون كلمة شائعة أو مكررة الأحرف.',
     bad_old: 'كلمة المرور الحالية غير صحيحة.', exists: 'اسم المستخدم مستخدم من قبل.', username: 'اسم المستخدم بأحرف إنجليزية صغيرة (3 أحرف فأكثر) ويبدأ بحرف.',
@@ -444,7 +445,7 @@
   }
 
   // ---------- shared with admin-store.js ----------
-  window.TNS_ADM = { call: call, say: say, pane: pane, esc: esc, fmt: fmt, fmtTime: fmtTime, API: API, isAdmin: function () { return isAdmin(); }, projects: function () { return PROJ; }, loadProjects: loadProjects };
+  window.TNS_ADM = { call: call, say: say, icon: icon, shrink: shrink, pane: pane, esc: esc, fmt: fmt, fmtTime: fmtTime, API: API, isAdmin: function () { return isAdmin(); }, projects: function () { return PROJ; }, loadProjects: loadProjects };
 
   // ---------- البداية ----------
   if (!API) { view('login'); say('لم يُضبط رابط الوسيط في assets/js/chat-config.js.', true); return; }

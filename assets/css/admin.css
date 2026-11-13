@@ -186,3 +186,36 @@ table.dons td,table.dons th{white-space:nowrap}
 .pr-store{border:1px solid #E4CF9F;background:#FFFCF4;border-radius:14px;padding:12px 16px 4px;margin:0 0 14px}
 .pr-store legend{padding:0 8px;color:#8A5A12}
 @media (max-width:640px){.pr-sum{flex-direction:column}.pr-sum .th{width:100%;height:140px}}
+/* governance page editor */
+.gov-bar{position:sticky;top:0;z-index:5;background:#F6F3EA;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:10px 0 2px}
+.gov-bar .ltabs{margin-bottom:8px}
+.gdirty{background:#FBF0D9;color:#7A5F22;border-radius:999px;padding:3px 14px;font-size:14px;margin-bottom:8px}
+.gnav{margin:4px 0 16px}
+.gsec{margin-bottom:18px;scroll-margin-top:70px}
+.gsec h3{margin-top:0}
+.glist{margin:14px 0 18px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#FCFBF8}
+.glist h4{margin:0 0 10px;font-size:17px}
+.gitem{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 14px;padding:12px 0;border-top:1px dashed #d9e1de}
+.gitem:first-of-type{border-top:0}
+.gtools{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:44px}
+.gnum{font-size:13px;color:#7A8783}
+.ib{border:1px solid var(--line);background:#fff;border-radius:8px;padding:2px 8px;font:inherit;font-size:12px;cursor:pointer;color:var(--g)}
+.ib:disabled{opacity:.35;cursor:default}
+.ib.danger{color:#B03A2E}
+.gfields{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:start;min-width:0}
+.gfields input,.gfields textarea,.gfields select{min-width:0;max-width:100%}
+.gfields>label:has(textarea),.gfields>.fref,.gfields>.gimg,.gfields>.glist{grid-column:1/-1}
+.gitem.compact .gfields{grid-template-columns:1fr 2fr}
+.gitem.doc .gfields{grid-template-columns:110px 1fr 1.3fr}
+.gitem.doc .gfields>.fref{grid-column:auto}
+.glbl{display:block;font-size:15px;margin-bottom:6px}
+.fref,.gimg{margin-bottom:14px}
+.fref-row,.gimg-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fref-row input{flex:1;min-width:180px;margin:0}
+.fref-row .btn,.gimg-row .btn{margin:0;cursor:pointer}
+input.inv{border-color:#B03A2E!important;background:#FFF6F5}
+.gthumb{width:84px;height:84px;border-radius:50%;background:#E8EFEC center/cover no-repeat;display:grid;place-items:center;font-size:11px;color:#7A8783;text-align:center;border:2px solid #E2CC97}
+.gicon{display:flex;gap:8px;align-items:center}
+.gicon select{flex:1}
+.gico{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:#E8EFEC}
+@media (max-width:760px){.gfields,.gitem.compact .gfields,.gitem.doc .gfields{grid-template-columns:minmax(0,1fr)}.glist{padding:10px 8px}.gitem{gap:8px}.gtools{min-width:34px}.gsec{padding:18px 14px}}

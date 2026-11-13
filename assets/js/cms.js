@@ -120,11 +120,94 @@
     if (window.TNS_initProgTabs) window.TNS_initProgTabs();
   }
 
+  // ---------- الحوكمة والشفافية: تُرسم من بيانات لوحة التحكم (نفس هيكل الصفحة الثابتة في build_site.py) ----------
+  function gref(r) {
+    r = r || '';
+    if (/^i:[a-f0-9]{24}$/.test(r)) return API + '/img/' + r.slice(2);
+    if (/^f:[a-f0-9]{24}$/.test(r)) return API + '/file/' + r.slice(2);
+    if (/^https:\/\//.test(r) || /^[a-z-]+\.html/.test(r)) return r; // a page link stays in the visitor's language
+    return PRE + r;
+  }
+  function secHead(k, t, l, center) {
+    return '<div class="sec-head' + (center ? ' center' : '') + '"><div class="kick">' + esc(k) + '</div><h2>' + esc(t) + '</h2>' + (l ? '<p>' + esc(l) + '</p>' : '') + '</div>';
+  }
+  function fileLink(ref, label, cls) {
+    return '<a class="' + (cls || 'gold') + '" href="' + esc(gref(ref)) + '" target="_blank" rel="noopener">' + icon('clip', 16, '#C49A45') + ' ' + esc(label) + '</a>';
+  }
+  var GOV = {
+    board: function (b) {
+      var leaders = (b.leaders || []).map(function (x) {
+        return '<div class="card leader"><div class="av">' + (x.photo ? '<img src="' + esc(gref(x.photo)) + '" alt="">' : icon('users', 34, '#C49A45')) + '</div><div class="role">' + esc(tx(x.role)) + '</div><h3>' + esc(tx(x.name)) + '</h3></div>';
+      }).join('');
+      var rows = (b.rows || []).map(function (r) { return '<tr><td>' + esc(tx(r.k)) + '</td><td>' + esc(tx(r.v)) + '</td></tr>'; }).join('');
+      return secHead(tx(b.kick), tx(b.title), tx(b.lead), true) + '<div class="grid g3">' + leaders + '</div>' +
+        (rows ? '<table style="margin-top:34px"><tr><th style="width:36%">' + esc(tx(b.thK)) + '</th><th>' + esc(tx(b.thV)) + '</th></tr>' + rows + '</table>' : '');
+    },
+    structure: function (s) {
+      var chart;
+      if (s.image) chart = '<figure class="org-img"><img src="' + esc(gref(s.image)) + '" alt="' + esc(tx(s.title)) + '"></figure>';
+      else {
+        var com = (s.committees || []).map(function (c) { return '<div class="org-n soft">' + esc(tx(c.name)) + '</div>'; }).join('');
+        var units = (s.units || []).map(function (u) { return '<div class="org-n soft">' + esc(tx(u.name)) + '</div>'; }).join('');
+        chart = '<div class="org">' + (tx(s.assembly) ? '<div class="org-n gold">' + esc(tx(s.assembly)) + '</div><i class="org-v"></i>' : '') +
+          '<div class="org-mid"><span></span><div class="org-n main">' + esc(tx(s.board)) + '</div>' +
+          (com ? '<div class="org-side"><span class="org-cap">' + esc(tx(s.committeesLabel)) + '</span><div class="org-row">' + com + '</div></div>' : '<span></span>') + '</div>' +
+          (tx(s.ceo) ? '<i class="org-v"></i><div class="org-n dark">' + esc(tx(s.ceo)) + '</div>' : '') +
+          (units ? '<i class="org-v"></i><div class="org-units">' + units + '</div>' : '') + '</div>';
+      }
+      return secHead(tx(s.kick), tx(s.title), tx(s.lead), true) + chart +
+        (s.file ? '<p class="center" style="margin-top:22px"><a class="btn btn-outline" href="' + esc(gref(s.file)) + '" target="_blank" rel="noopener">' + icon('clip', 18) + ' ' + esc(tx(s.fileLabel)) + '</a></p>' : '') +
+        (tx(s.note) ? '<p class="muted center">' + esc(tx(s.note)) + '</p>' : '');
+    },
+    disclose: function (d) {
+      var cards = (d.items || []).map(function (x) {
+        return '<div class="card" id="' + esc(x.id) + '"><div class="ico">' + icon(x.icon) + '</div><h3>' + esc(tx(x.title)) + '</h3><p>' + esc(tx(x.text)) + '</p><div class="gmeta">' +
+          (tx(x.status) ? '<span class="pill">' + esc(tx(x.status)) + '</span>' : '') + (x.file ? fileLink(x.file, tx(d.fileLabel)) : '') + '</div></div>';
+      }).join('');
+      return secHead(tx(d.kick), tx(d.title), tx(d.lead), true) + '<div class="grid g3">' + cards + '</div>';
+    },
+    docs: function (dc) {
+      var html = secHead(tx(dc.kick), tx(dc.title), tx(dc.lead));
+      (dc.groups || []).forEach(function (g, i) {
+        var rows = (g.items || []).map(function (x) {
+          return '<tr><td style="width:90px">' + esc(tx(x.code)) + '</td><td>' + esc(tx(x.name)) + '</td><td style="width:130px">' + (x.file ? fileLink(x.file, tx(dc.view)) : '') + '</td></tr>';
+        }).join('');
+        html += '<h3 style="margin-top:' + (i ? 40 : 10) + 'px">' + esc(tx(g.title)) + '</h3><table><tr><th>' + esc(tx(dc.thCode)) + '</th><th>' + esc(tx(dc.thName)) + '</th><th>' + esc(tx(dc.thFile)) + '</th></tr>' + rows + '</table>';
+      });
+      if (tx(dc.note)) html += '<p class="muted" style="margin-top:16px">' + esc(tx(dc.note)) + '</p>';
+      return html;
+    }
+  };
+  function renderGov(g) {
+    if (!g || !document.querySelector('[data-gov]')) return;
+    var hero = document.querySelector('.page-hero');
+    if (hero && g.hero) {
+      if (tx(g.hero.title)) { hero.querySelector('h1').textContent = tx(g.hero.title); }
+      var hp = hero.querySelector('p'); if (hp) hp.textContent = tx(g.hero.lead);
+    }
+    document.querySelectorAll('[data-gov]').forEach(function (sec) {
+      var k = sec.getAttribute('data-gov'), d = g[k]; if (!d) return;
+      sec.hidden = d.show === false;
+      var w = sec.querySelector('.wrap');
+      if (GOV[k]) { w.innerHTML = GOV[k](d); return; }
+      if (k === 'satisfaction') {
+        var t = sec.querySelector('[data-gt]'), p = sec.querySelector('[data-gp]');
+        if (t) t.textContent = tx(d.title); if (p) p.textContent = tx(d.text);
+      }
+      if (k === 'band') {
+        sec.querySelector('h2').textContent = tx(d.title); sec.querySelector('.band p').textContent = tx(d.text);
+        sec.querySelector('.cta').innerHTML = (d.buttons || []).map(function (x, i) { return '<a class="btn ' + (i ? 'btn-ghost' : 'btn-gold') + '" href="' + esc(gref(x.href)) + '">' + esc(tx(x.label)) + '</a>'; }).join('');
+      }
+    });
+    if (location.hash) { var el = document.getElementById(location.hash.slice(1)); if (el && !window.__govScrolled) { window.__govScrolled = 1; el.scrollIntoView(); } }
+  }
+
   function apply(d) {
     var news = d.news || [];
     renderNews(news); showItem(news);
     ticker(news.filter(function (n) { return n.ticker !== false; }).slice(0, 10));
     renderProjects(d.projects || []);
+    renderGov(d.gov);
   }
 
   function start() {

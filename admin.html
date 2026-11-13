@@ -55,6 +55,7 @@
   <nav class="adm-tabs" id="tabs">
    <button type="button" data-tab="news" class="on">الأخبار <span class="cnt" id="pending-cnt" hidden></span></button>
    <button type="button" data-tab="projects">المشاريع والبرامج <span class="cnt" id="proj-pending-cnt" hidden></span></button>
+   <button type="button" data-tab="gov" data-admin>الحوكمة والشفافية</button>
    <button type="button" data-tab="dash" data-admin>لوحة المتجر</button>
    <button type="button" data-tab="dons" data-admin>التبرعات</button>
    <button type="button" data-tab="users" data-admin>المستخدمون والصلاحيات</button>
@@ -248,6 +249,20 @@
    <div id="subs-table"><p class="muted">جارٍ التحميل...</p></div>
   </div>
 
+  <!-- الحوكمة والشفافية -->
+  <div class="pane" id="p-gov" hidden>
+   <div class="bar"><h2>صفحة الحوكمة والشفافية</h2>
+    <div class="row" style="margin:0"><a class="btn btn-outline" href="governance.html" target="_blank" rel="noopener">معاينة الصفحة</a><button class="btn btn-green" type="button" id="gov-save">حفظ التغييرات</button></div></div>
+   <p class="muted small">كل ما في صفحة الحوكمة والشفافية يُدار من هنا: القيادات وبيانات المجلس والهيكل التنظيمي والإفصاح والسياسات واللوائح وملفاتها. اكتب بالعربية أولًا، والإنجليزية والأردية اختياريتان (يظهر النص العربي إن تُركتا فارغتين). الملفات: PDF أو صور حتى 8 ميغابايت.</p>
+   <div class="gov-bar">
+    <div class="ltabs" id="gov-ltabs"><button type="button" data-l="ar" class="on">العربية *</button><button type="button" data-l="en">English</button><button type="button" data-l="ur">اردو</button></div>
+    <span class="gdirty" id="gov-dirty" hidden>تغييرات غير محفوظة</span>
+   </div>
+   <div class="fchips gnav" id="gov-nav"></div>
+   <div id="gov-body"></div>
+   <p style="margin-top:22px"><button type="button" class="lnk danger" id="gov-reset">استعادة المحتوى الأصلي للصفحة</button></p>
+  </div>
+
   <!-- الإعدادات -->
   <div class="pane" id="p-settings" hidden>
    <div class="bar"><h2>إعدادات المتجر</h2></div>
@@ -276,5 +291,6 @@
 <script src="assets/js/icons.js"></script>
 <script src="assets/js/admin.js"></script>
 <script src="assets/js/admin-store.js"></script>
+<script src="assets/js/admin-gov.js"></script>
 </body>
 </html>
